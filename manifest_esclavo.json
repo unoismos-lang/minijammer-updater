@@ -1,0 +1,14 @@
+{
+  "name": "MiniJammer XXL - Firmware Placa Esclava",
+  "version": "1.0.0",
+  "home_url": "https://github.com/",
+  "funding_url": "",
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "parts": [
+        { "path": "firmware_esclavo.bin", "offset": 0 }
+      ]
+    }
+  ]
+}

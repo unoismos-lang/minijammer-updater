@@ -501,7 +501,7 @@ code {
   font-size: 0.85rem;
 }
 
-/* Changelog Buttons */
+/* Changelog & History Buttons */
 .changelog-btn {
   background: rgba(255, 255, 255, 0.05);
   color: var(--text-main);
@@ -512,11 +512,30 @@ code {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 .changelog-btn:hover {
   transform: translateY(-1px);
+}
+
+.history-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.history-icon-btn:hover {
+  transform: scale(1.1);
 }
 
 .glow-cyan-dim:hover {

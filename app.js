@@ -28,8 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 3. Control de Modales (Changelog)
-  const changelogBtns = document.querySelectorAll('.changelog-btn');
+  // 3. Control de Modales (Changelog / Historial)
+  const changelogBtns = document.querySelectorAll('.changelog-btn, .history-icon-btn');
   const closeBtns = document.querySelectorAll('.modal-close');
   const overlays = document.querySelectorAll('.modal-overlay');
 

@@ -87,9 +87,14 @@
             <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
               <span class="version-tag">v1.1</span>
               <span style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">Actualizado: 26/08/2026 - 14:46</span>
-              <button class="changelog-btn glow-cyan-dim" data-changelog="modal-maestro">
-                📋 Novedades
-              </button>
+              <div style="display: flex; gap: 6px; margin-top: 4px;">
+                <button class="changelog-btn glow-cyan-dim" data-changelog="modal-maestro">
+                  📋 Novedades
+                </button>
+                <button class="changelog-btn glow-cyan-dim" data-changelog="modal-historial-maestro">
+                  📜 Historial
+                </button>
+              </div>
             </div>
           </div>
 
@@ -142,9 +147,14 @@
             <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
               <span class="version-tag">v1</span>
               <span style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">Actualizado: 26/08/2026 - 14:46</span>
-              <button class="changelog-btn glow-orange-dim" data-changelog="modal-esclavo">
-                📋 Novedades
-              </button>
+              <div style="display: flex; gap: 6px; margin-top: 4px;">
+                <button class="changelog-btn glow-orange-dim" data-changelog="modal-esclavo">
+                  📋 Novedades
+                </button>
+                <button class="changelog-btn glow-orange-dim" data-changelog="modal-historial-esclavo">
+                  📜 Historial
+                </button>
+              </div>
             </div>
           </div>
 
@@ -321,6 +331,80 @@
             <li><strong>Sin Novedades:</strong> No se han realizado modificaciones de código sobre este controlador en la presente compilación.</li>
           </ul>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Historial de Versiones Placa Maestra -->
+  <div id="modal-historial-maestro" class="modal-overlay">
+    <div class="modal-content glass-card">
+      <div class="modal-header">
+        <h2>Historial de Versiones — Placa Maestra</h2>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        
+        <!-- Versión 1.1 -->
+        <details class="faq-item" open style="border-color: rgba(0, 229, 255, 0.35); background: rgba(0, 229, 255, 0.03);">
+          <summary style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+            <span><strong style="color: var(--cyan);">v1.1</strong> — Preescucha, Lo-Fi & Modulación Encoder 3</span>
+            <span style="font-size: 0.75rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">26/08/2026</span>
+          </summary>
+          <div class="changelog-section" style="margin-top: 14px;">
+            <ul>
+              <li><strong>Preescucha de Audio:</strong> Controles <code>PLAY (func[2])</code> y <code>STOP (func[3])</code> integrados en el explorador LCD.</li>
+              <li><strong>Retención de Selección:</strong> El cursor mantiene su posición en la lista al borrar archivos.</li>
+              <li><strong>Resampling Lo-Fi:</strong> Detección automática y frecuencia real de 22050 Hz sin aceleración de pitch.</li>
+              <li><strong>Menú LED RGB:</strong> 11 parámetros con scroll suave, paso <code>+/- 2</code> y atajo <code>SHIFT</code> + Doble Clic Joystick.</li>
+              <li><strong>Efectos Encoder 3:</strong> 4 modos físicos asignables (<code>ENC 3</code>, <code>ENC 3 CLK</code>, <code>ENC 3 SH</code>, <code>ENC 3 SH+CLK</code>).</li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Versión 1.0 -->
+        <details class="faq-item" style="margin-top: 8px;">
+          <summary style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+            <span><strong style="color: #fff;">v1.0</strong> — Lanzamiento Base de Producción</span>
+            <span style="font-size: 0.75rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">26/08/2026</span>
+          </summary>
+          <div class="changelog-section" style="margin-top: 14px;">
+            <ul>
+              <li><strong>Motor Sampler DSP:</strong> Síntesis polifónica en tiempo real y lectura de audio estéreo.</li>
+              <li><strong>Interfaz Gráfica LCD:</strong> Visualización de menú, formas de onda y vúmetros en tiempo real con LovyanGFX.</li>
+              <li><strong>Almacenamiento MicroSD:</strong> Navegación y carga de bancos de samples WAV.</li>
+              <li><strong>Comunicación UART:</strong> Protocolo serie bidireccional con el procesador de controles.</li>
+            </ul>
+          </div>
+        </details>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Historial de Versiones Placa Esclava -->
+  <div id="modal-historial-esclavo" class="modal-overlay">
+    <div class="modal-content glass-card">
+      <div class="modal-header">
+        <h2>Historial de Versiones — Placa Esclava</h2>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        
+        <!-- Versión 1.0 -->
+        <details class="faq-item" open style="border-color: rgba(255, 145, 0, 0.35); background: rgba(255, 145, 0, 0.03);">
+          <summary style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+            <span><strong style="color: var(--orange);">v1.0</strong> — Lanzamiento Base de Producción</span>
+            <span style="font-size: 0.75rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">26/08/2026</span>
+          </summary>
+          <div class="changelog-section" style="margin-top: 14px;">
+            <ul>
+              <li><strong>Matriz de 16 Pads:</strong> Escaneo continuo de baja latencia para pads táctiles de percusión.</li>
+              <li><strong>Encoders & Botones:</strong> Lectura y filtrado físico de encoders rotatorios y botones funcionales.</li>
+              <li><strong>Enlace UART:</strong> Transmisión continua de eventos de pulsación y giros hacia la Placa Maestra.</li>
+            </ul>
+          </div>
+        </details>
+
       </div>
     </div>
   </div>

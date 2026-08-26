@@ -84,9 +84,12 @@
               <span class="chip chip-cyan">SISTEMA PRINCIPAL</span>
               <h2>Firmware Placa Maestra</h2>
             </div>
-            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
               <span class="version-tag">v1.1</span>
               <span style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">Actualizado: 26/08/2026 - 14:46</span>
+              <button class="changelog-btn glow-cyan-dim" data-changelog="modal-maestro">
+                📋 Novedades
+              </button>
             </div>
           </div>
 
@@ -136,9 +139,12 @@
               <span class="chip chip-orange">SISTEMA DE CONTROLES</span>
               <h2>Firmware Placa Esclava</h2>
             </div>
-            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
               <span class="version-tag">v1</span>
               <span style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">Actualizado: 26/08/2026 - 14:46</span>
+              <button class="changelog-btn glow-orange-dim" data-changelog="modal-esclavo">
+                📋 Novedades
+              </button>
             </div>
           </div>
 
@@ -249,6 +255,58 @@
     <footer class="footer">
       <p>MiniJammer XXL</p>
     </footer>
+  </div>
+
+  <!-- Modal: Novedades Placa Maestra -->
+  <div id="modal-maestro" class="modal-overlay">
+    <div class="modal-content glass-card">
+      <div class="modal-header">
+        <h2>Cambios en Placa Maestra v1.1</h2>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="changelog-section">
+          <h3>🎵 Parches de Audio & Resampling Lo-Fi</h3>
+          <ul>
+            <li><strong>Alineación Automática:</strong> El motor de reproducción de samples estéreo y mono ahora detecta y se alinea automáticamente con la tasa de muestreo nativa del Sampler (22050 Hz en modo Lo-Fi, 44100 Hz en Hi-Fi).</li>
+            <li><strong>Corrección de Pitch:</strong> Se evita la aceleración no deseada al hacer preescuchas de samples grabados en calidad reducida.</li>
+          </ul>
+        </div>
+        <div class="changelog-section">
+          <h3>📂 Novedades en Explorador de Archivos (Preescucha)</h3>
+          <ul>
+            <li><strong>Botones de Preescucha:</strong> Reproduce audios directamente en la lista del explorador de la pantalla LCD usando el botón físico <strong>PLAY (func[2])</strong> y deténlos con <strong>STOP (func[3])</strong>.</li>
+            <li><strong>Retención de Cursor:</strong> Al eliminar un archivo del explorador, el cursor del menú ya no salta al primer elemento del directorio; ahora se mantiene en la misma posición (apuntando al archivo posterior o anterior si era el último).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Novedades Placa Esclava -->
+  <div id="modal-esclavo" class="modal-overlay">
+    <div class="modal-content glass-card">
+      <div class="modal-header">
+        <h2>Cambios en Placa Esclava v1</h2>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="changelog-section">
+          <h3>🌈 Ajustes de Iluminación RGB (Menú LED)</h3>
+          <ul>
+            <li><strong>Menú Expandido:</strong> Ampliado el menú de configuraciones de color de LED en pantalla a 11 parámetros editables en total con navegación de scroll suave.</li>
+            <li><strong>Control de Encoders:</strong> Corregidos los saltos y comportamiento errático al ajustar colores; ahora el incremento responde a un paso predecible de <code>+/- 2</code> por clic del encoder físico.</li>
+            <li><strong>Controles:</strong> Los colores se configuran girando el encoder rotatorio asignado en la pantalla de LEDs.</li>
+          </ul>
+        </div>
+        <div class="changelog-section">
+          <h3>🎹 Asignación de Efectos por Encoder</h3>
+          <ul>
+            <li><strong>Efectos Interactivos:</strong> Añadido el sistema para disparar y modular efectos de sonido interactivos al presionar y girar los encoders táctiles dedicados.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="app.js"></script>

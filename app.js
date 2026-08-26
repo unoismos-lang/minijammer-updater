@@ -27,4 +27,42 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  // 3. Control de Modales (Changelog)
+  const changelogBtns = document.querySelectorAll('.changelog-btn');
+  const closeBtns = document.querySelectorAll('.modal-close');
+  const overlays = document.querySelectorAll('.modal-overlay');
+
+  changelogBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const modalId = btn.getAttribute('data-changelog');
+      const targetModal = document.getElementById(modalId);
+      if (targetModal) {
+        targetModal.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Evitar scroll de fondo
+      }
+    });
+  });
+
+  const closeModal = (modal) => {
+    if (modal) {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  };
+
+  closeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      closeModal(btn.closest('.modal-overlay'));
+    });
+  });
+
+  // Cerrar al hacer clic fuera de la tarjeta modal
+  overlays.forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        closeModal(overlay);
+      }
+    });
+  });
 });

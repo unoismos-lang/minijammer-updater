@@ -99,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const filesContainer = document.getElementById('files-container');
   const filesList = document.getElementById('files-list');
   const convModeSelect = document.getElementById('conv-mode');
+  const convSanitize = document.getElementById('conv-sanitize');
 
   if (!dropZone || !fileInput || !folderInput) {
     console.error("No se encontraron los elementos necesarios del convertidor de audio.");
@@ -406,10 +407,63 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Sanitización de rutas y nombres para compatibilidad con MicroSD / ESP32 (FAT32)
+  function sanitizeSDPath(rawPath) {
+    if (!rawPath) return 'track.wav';
+    
+    const cleanSlashes = rawPath.replace(/\\/g, '/');
+    const parts = cleanSlashes.split('/');
+
+    const sanitizedParts = parts.map((part, index) => {
+      const isFile = (index === parts.length - 1);
+      let ext = '';
+      let base = part;
+
+      if (isFile && part.includes('.')) {
+        const lastDot = part.lastIndexOf('.');
+        base = part.substring(0, lastDot);
+        ext = part.substring(lastDot);
+      }
+
+      // 1. Quitar acentos y diacríticos (á -> a, ñ -> n, etc.)
+      base = base.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+      // 2. Reemplazar apóstrofes curvados, comillas tipográficas y guiones largos
+      base = base.replace(/[’‘`´]/g, "'")
+                 .replace(/[“”]/g, '')
+                 .replace(/[–—]/g, '-');
+
+      // 3. Quitar caracteres conflictivos con FAT32 / ESP32 SD
+      base = base.replace(/[\\?%*:|"<>#~[\]^;!]/g, '_');
+
+      // 4. Limpiar espacios múltiples y caracteres de control
+      base = base.replace(/[\x00-\x1F\x7F]/g, '')
+                 .replace(/\s+/g, ' ')
+                 .trim();
+
+      // 5. Evitar nombres vacíos o que empiecen/terminen con puntos
+      base = base.replace(/^\.+|\.+$/g, '').trim();
+      if (!base) base = isFile ? 'track' : 'folder';
+
+      // 6. Limitar longitud de segmento a 50 caracteres para evitar overflow en ESP32
+      if (base.length > 50) {
+        base = base.substring(0, 50).trim();
+      }
+
+      return isFile ? (base + (ext.toLowerCase() === '.wav' ? '.wav' : ext)) : base;
+    });
+
+    return sanitizedParts.filter(p => p.length > 0).join('/');
+  }
+
   function triggerSingleDownload(item) {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(item.blob);
-    a.download = item.file.name.replace(/\.[^/.]+$/, ".wav");
+    let filename = item.file.name.replace(/\.[^/.]+$/, ".wav");
+    if (!convSanitize || convSanitize.checked) {
+      filename = sanitizeSDPath(filename);
+    }
+    a.download = filename;
     a.click();
     URL.revokeObjectURL(a.href);
   }
@@ -421,9 +475,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const zip = new JSZip();
+      const shouldSanitize = !convSanitize || convSanitize.checked;
+
       conversionQueue.forEach(item => {
         if (item.status === 'success' && item.blob) {
-          const wavPath = item.path.replace(/\.[^/.]+$/, ".wav");
+          let wavPath = item.path.replace(/\.[^/.]+$/, ".wav");
+          if (shouldSanitize) {
+            wavPath = sanitizeSDPath(wavPath);
+          }
           zip.file(wavPath, item.blob);
         }
       });

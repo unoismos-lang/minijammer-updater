@@ -10,7 +10,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=5.0">
+  <link rel="stylesheet" href="styles.css?v=6.0">
 
   <!-- JSZip para empaquetado de carpetas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -249,6 +249,16 @@
                 <option value="mono" selected>Modo Sampler (16-bit Mono, 44.1kHz) - Optimizado para pads</option>
                 <option value="stereo">Modo MiniPlayer / Escucha (16-bit Estéreo, 44.1kHz)</option>
               </select>
+            </div>
+
+            <div class="option-group" style="display: flex; flex-direction: column; justify-content: center; gap: 6px; flex: 1; min-width: 260px;">
+              <label style="font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
+                <span>🛡️ Compatibilidad MicroSD / ESP32:</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-muted); cursor: pointer; margin-top: 4px;">
+                <input type="checkbox" id="conv-sanitize" checked style="accent-color: var(--cyan); width: 16px; height: 16px; cursor: pointer;">
+                <span>Sanitizar nombres (quitar acentos, comillas tipográficas y símbolos conflictivos)</span>
+              </label>
             </div>
           </div>
 
@@ -627,7 +637,7 @@
     </div>
   </div>
 
-  <script src="app.js?v=5.0"></script>
+  <script src="app.js?v=6.0"></script>
 </body>
 
 </html>

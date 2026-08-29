@@ -226,8 +226,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (fileObj && audioFormats.test(fileObj.name)) {
-        if (!conversionQueue.some(q => q.path === relPath)) {
-          addFileToQueue(fileObj, relPath);
+        let cleanPath = relPath;
+        if (!convSanitize || convSanitize.checked) {
+          cleanPath = sanitizeSDPath(relPath);
+        }
+        if (!conversionQueue.some(q => q.path === cleanPath)) {
+          addFileToQueue(fileObj, cleanPath);
           addedCount++;
         }
       }
@@ -445,9 +449,10 @@ document.addEventListener('DOMContentLoaded', () => {
       base = base.replace(/^\.+|\.+$/g, '').trim();
       if (!base) base = isFile ? 'track' : 'folder';
 
-      // 6. Limitar longitud de segmento a 50 caracteres para evitar overflow en ESP32
-      if (base.length > 50) {
-        base = base.substring(0, 50).trim();
+      // 6. Limitar longitud de segmento: carpetas a máx 30 caracteres, archivos a máx 45 caracteres
+      const maxLen = isFile ? 45 : 30;
+      if (base.length > maxLen) {
+        base = base.substring(0, maxLen).trim();
       }
 
       return isFile ? (base + (ext.toLowerCase() === '.wav' ? '.wav' : ext)) : base;

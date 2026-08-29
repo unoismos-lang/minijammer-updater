@@ -625,9 +625,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const QUALITY_PRESETS = {
     'lofi':    { id: 'lofi',    label: 'LOFI 16b',   name: 'LOFI (22.05kHz 16-bit)',            sampleRate: 22050, bitDepth: 16, maxSec: 10.0, maxSamples: 220500, emu12: false },
     'hifi':    { id: 'hifi',    label: 'HIFI 16b',   name: 'HIFI (44.1kHz 16-bit)',             sampleRate: 44100, bitDepth: 16, maxSec: 5.0,  maxSamples: 220500, emu12: false },
-    '12_emu':  { id: '12_emu',  label: '12-EMU 12b', name: '12-EMU SP-1200 (22.05kHz 12-bit)', sampleRate: 22050, bitDepth: 16, maxSec: 10.0, maxSamples: 220500, emu12: true },
+    '12_emu':  { id: '12_emu',  label: '12-EMU 12b', name: '12-EMU (22.05kHz 12-bit)',         sampleRate: 22050, bitDepth: 16, maxSec: 10.0, maxSamples: 220500, emu12: true },
     'crunch':  { id: 'crunch',  label: 'CRNCH 8b',   name: 'CRUNCH (22.05kHz 8-bit)',          sampleRate: 22050, bitDepth: 8,  maxSec: 20.0, maxSamples: 441000, emu12: false },
-    'vintage': { id: 'vintage', label: 'VINTG 12b',  name: 'VINTAGE SP-1200 (11.025kHz 12-bit)', sampleRate: 11025, bitDepth: 16, maxSec: 20.0, maxSamples: 220500, emu12: true },
+    'vintage': { id: 'vintage', label: 'VINTG 12b',  name: 'VINTAGE (11.025kHz 12-bit)',        sampleRate: 11025, bitDepth: 16, maxSec: 20.0, maxSamples: 220500, emu12: true },
     'extreme': { id: 'extreme', label: 'EXTRM 8b',   name: 'EXTREMO (11.025kHz 8-bit)',         sampleRate: 11025, bitDepth: 8,  maxSec: 40.0, maxSamples: 441000, emu12: false },
   };
 
@@ -1265,7 +1265,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let s = Math.max(-1, Math.min(1, float32Array[i]));
         let pcm = s < 0 ? Math.floor(s * 0x8000) : Math.floor(s * 0x7FFF);
         if (emu12) {
-          pcm = pcm & 0xFFF0; // Máscara 12-bit SP-1200
+          pcm = pcm & 0xFFF0; // Máscara 12-bit
         }
         view.setInt16(offset, pcm, true);
         offset += 2;

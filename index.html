@@ -10,7 +10,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=3.0">
+  <link rel="stylesheet" href="styles.css?v=3.5">
 
   <!-- JSZip para empaquetado de carpetas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -299,7 +299,7 @@
         <div class="card glass-card">
           <div class="card-header">
             <div class="card-title-group">
-              <span class="chip" style="background: rgba(255, 61, 113, 0.15); color: #ff3d71; border: 1px solid rgba(255, 61, 113, 0.3);">CHOP STUDIO</span>
+              <span class="chip" style="background: rgba(255, 214, 0, 0.15); color: #ffd600; border: 1px solid rgba(255, 214, 0, 0.35);">CHOP STUDIO</span>
               <h2>Auto-Slicer & Sample Chopper</h2>
             </div>
             <span style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">16 Pads / Chops Inteligentes</span>
@@ -310,11 +310,11 @@
           </p>
 
           <!-- Dropzone de Audio para Slicer -->
-          <div id="slicer-drop-zone" class="drop-zone" style="border: 2px dashed rgba(255, 61, 113, 0.35); border-radius: 12px; padding: 32px 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; background: rgba(255, 61, 113, 0.02); display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px;">
-            <div style="font-size: 2.8rem; filter: drop-shadow(0 0 10px rgba(255, 61, 113, 0.4));">✂️</div>
+          <div id="slicer-drop-zone" class="drop-zone" style="border: 2px dashed rgba(255, 214, 0, 0.4); border-radius: 12px; padding: 32px 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; background: rgba(255, 214, 0, 0.02); display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px;">
+            <div style="font-size: 2.8rem; filter: drop-shadow(0 0 10px rgba(255, 214, 0, 0.45));">✂️</div>
             <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-main);">Arrastra aquí un audio para cortar (MP3, FLAC, WAV, M4A)</div>
             <div style="font-size: 0.8rem; color: var(--text-muted);">o haz clic para buscar en tus archivos</div>
-            <label for="slicer-file-input" class="btn btn-primary" style="padding: 8px 18px; font-size: 0.85rem; margin-top: 6px; min-height: auto; min-width: auto; background: rgba(255, 61, 113, 0.15); border-color: rgba(255, 61, 113, 0.3); color: #ff3d71; cursor: pointer; display: inline-flex; align-items: center;">Seleccionar Archivo de Audio</label>
+            <label for="slicer-file-input" class="btn btn-primary" style="padding: 8px 18px; font-size: 0.85rem; margin-top: 6px; min-height: auto; min-width: auto; background: rgba(255, 214, 0, 0.15); border-color: rgba(255, 214, 0, 0.35); color: #ffd600; cursor: pointer; display: inline-flex; align-items: center;">Seleccionar Archivo de Audio</label>
             <input type="file" id="slicer-file-input" accept="audio/*" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;">
           </div>
 
@@ -333,7 +333,7 @@
 
                 <div id="sensitivity-container" style="display: flex; align-items: center; gap: 8px;">
                   <label for="slicer-sensitivity" style="font-size: 0.85rem; color: var(--text-muted);">Sensibilidad:</label>
-                  <input type="range" id="slicer-sensitivity" min="1" max="100" value="50" style="accent-color: #ff3d71; cursor: pointer; width: 90px;">
+                  <input type="range" id="slicer-sensitivity" min="1" max="100" value="50" style="accent-color: #ffd600; cursor: pointer; width: 90px;">
                   <span id="slicer-sensitivity-val" style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">50%</span>
                 </div>
               </div>
@@ -608,7 +608,7 @@
     </div>
   </div>
 
-  <script src="app.js?v=3.0"></script>
+  <script src="app.js?v=3.5"></script>
 </body>
 
 </html>

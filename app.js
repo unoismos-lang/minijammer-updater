@@ -776,7 +776,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.clearRect(0, 0, width, height);
 
     // 1. Dibujar regiones de Slices
-    const sliceColors = ['rgba(0, 229, 255, 0.05)', 'rgba(255, 61, 113, 0.05)', 'rgba(186, 104, 200, 0.05)', 'rgba(255, 145, 0, 0.05)'];
+    const sliceColors = ['rgba(0, 229, 255, 0.05)', 'rgba(255, 214, 0, 0.06)', 'rgba(186, 104, 200, 0.05)', 'rgba(255, 145, 0, 0.05)'];
     for (let i = 0; i < getSliceCount(); i++) {
       const x1 = (slicerSlices[i] / totalSamples) * width;
       const x2 = (slicerSlices[i + 1] / totalSamples) * width;
@@ -818,7 +818,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const x = (slicerSlices[i] / totalSamples) * width;
 
       ctx.beginPath();
-      ctx.strokeStyle = '#ff3d71';
+      ctx.strokeStyle = '#ffd600';
       ctx.lineWidth = 2;
       ctx.setLineDash([4, 2]);
       ctx.moveTo(x, 0);
@@ -826,7 +826,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.stroke();
       ctx.setLineDash([]);
 
-      ctx.fillStyle = '#ff3d71';
+      ctx.fillStyle = '#ffd600';
       ctx.beginPath();
       ctx.arc(x, 6, 4, 0, Math.PI * 2);
       ctx.fill();

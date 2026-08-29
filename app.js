@@ -617,25 +617,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const slicerQualityGlobal = document.getElementById('slicer-quality-global');
   const exportAutoadjustQuality = document.getElementById('export-autoadjust-quality');
   const exportJamBankSelect = document.getElementById('export-jam-bank');
+  const exportFullWavsBtn = document.getElementById('export-full-wavs-btn');
   const exportWavsBtn = document.getElementById('export-wavs-btn');
   const exportJamBtn = document.getElementById('export-jam-btn');
 
-  // Presets de calidad basados en la arquitectura de memoria del MiniJammer XXL (MAX_SAMPLES_PER_ASSET = 220500)
+  // Presets de calidad exactos basados en la arquitectura de hardware del MiniJammer XXL (GlobalState.h: MAX_SAMPLES_PER_ASSET = 220500)
   const QUALITY_PRESETS = {
-    '44k16': { id: '44k16', label: '44.1k 16b', name: 'Hi-Fi (44.1kHz 16-bit)', sampleRate: 44100, bitDepth: 16, maxSec: 5.0, maxSamples: 220500 },
-    '22k16': { id: '22k16', label: '22.0k 16b', name: 'Estándar (22.05kHz 16-bit)', sampleRate: 22050, bitDepth: 16, maxSec: 10.0, maxSamples: 220500 },
-    '22k8':  { id: '22k8',  label: '22.0k 8b',  name: 'Lo-Fi (22.05kHz 8-bit)', sampleRate: 22050, bitDepth: 8,  maxSec: 20.0, maxSamples: 441000 },
-    '11k8':  { id: '11k8',  label: '11.0k 8b',  name: 'Vintage (11.025kHz 8-bit)', sampleRate: 11025, bitDepth: 8,  maxSec: 40.0, maxSamples: 441000 },
+    'lofi':    { id: 'lofi',    label: 'LOFI 16b',   name: 'LOFI (22.05kHz 16-bit)',            sampleRate: 22050, bitDepth: 16, maxSec: 10.0, maxSamples: 220500, emu12: false },
+    'hifi':    { id: 'hifi',    label: 'HIFI 16b',   name: 'HIFI (44.1kHz 16-bit)',             sampleRate: 44100, bitDepth: 16, maxSec: 5.0,  maxSamples: 220500, emu12: false },
+    '12_emu':  { id: '12_emu',  label: '12-EMU 12b', name: '12-EMU SP-1200 (22.05kHz 12-bit)', sampleRate: 22050, bitDepth: 16, maxSec: 10.0, maxSamples: 220500, emu12: true },
+    'crunch':  { id: 'crunch',  label: 'CRNCH 8b',   name: 'CRUNCH (22.05kHz 8-bit)',          sampleRate: 22050, bitDepth: 8,  maxSec: 20.0, maxSamples: 441000, emu12: false },
+    'vintage': { id: 'vintage', label: 'VINTG 12b',  name: 'VINTAGE SP-1200 (11.025kHz 12-bit)', sampleRate: 11025, bitDepth: 16, maxSec: 20.0, maxSamples: 220500, emu12: true },
+    'extreme': { id: 'extreme', label: 'EXTRM 8b',   name: 'EXTREMO (11.025kHz 8-bit)',         sampleRate: 11025, bitDepth: 8,  maxSec: 40.0, maxSamples: 441000, emu12: false },
   };
 
-  let globalQualityMode = '22k16'; // '22k16', '44k16', '22k8', '11k8', 'custom'
-  let padQualities = Array(16).fill('22k16');
+  let globalQualityMode = 'lofi'; // 'lofi', 'hifi', '12_emu', 'crunch', 'vintage', 'extreme', 'custom'
+  let padQualities = Array(16).fill('lofi');
 
   function getRecommendedQuality(durationSec) {
-    if (durationSec <= 5.0) return '44k16';
-    if (durationSec <= 10.0) return '22k16';
-    if (durationSec <= 20.0) return '22k8';
-    return '11k8';
+    if (durationSec <= 5.0) return 'hifi';
+    if (durationSec <= 10.0) return 'lofi';
+    if (durationSec <= 20.0) return 'crunch';
+    return 'extreme';
   }
 
   let slicerAudioBuffer = null;
@@ -962,7 +965,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Renderizar la matriz de 16 pads con límites de RAM y calidad
+  // Renderizar la matriz de 16 pads con límites de RAM y calidad exactos
   function renderPadsGrid() {
     if (!slicerPadsGrid) return;
     slicerPadsGrid.innerHTML = '';
@@ -989,16 +992,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (hasSlice) {
         const durationSec = (slicerSlices[i + 1] - slicerSlices[i]) / origSampleRate;
-        const qKey = padQualities[i] || '22k16';
-        const preset = QUALITY_PRESETS[qKey] || QUALITY_PRESETS['22k16'];
+        const qKey = padQualities[i] || 'lofi';
+        const preset = QUALITY_PRESETS[qKey] || QUALITY_PRESETS['lofi'];
         const isExceeded = durationSec > (preset.maxSec + 0.05);
 
         if (isExceeded) {
           warningCount++;
           pad.classList.add('warning');
+          lenSpan.textContent = `${durationSec.toFixed(1)}s (máx ${preset.maxSec}s)`;
+        } else {
+          lenSpan.textContent = `${durationSec.toFixed(2)}s / ${preset.maxSec}s`;
         }
-
-        lenSpan.textContent = `${durationSec.toFixed(2)}s / ${preset.maxSec}s`;
 
         pad.appendChild(numSpan);
         pad.appendChild(keySpan);
@@ -1007,23 +1011,25 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isExceeded) {
           const warnBadge = document.createElement('span');
           warnBadge.className = 'slicer-pad-warning-badge';
-          warnBadge.textContent = `⚠️ Excede ${preset.maxSec}s`;
+          warnBadge.textContent = `⚠️ Excede ${preset.maxSec}s (se recortará)`;
           pad.appendChild(warnBadge);
 
           const recKey = getRecommendedQuality(durationSec);
           const recPreset = QUALITY_PRESETS[recKey];
-          const fixBtn = document.createElement('button');
-          fixBtn.style.cssText = 'font-size: 0.58rem; background: rgba(255,214,0,0.15); color: #ffd600; border: 1px solid rgba(255,214,0,0.35); border-radius: 4px; padding: 1px 4px; cursor: pointer; margin-top: 2px; font-family: "JetBrains Mono", monospace; font-weight: 700;';
-          fixBtn.textContent = `⚡ Usar ${recPreset.label}`;
-          fixBtn.title = `Cambiar calidad a ${recPreset.name} para que quepa completo`;
-          fixBtn.addEventListener('click', (ev) => {
-            ev.stopPropagation();
-            padQualities[i] = recKey;
-            globalQualityMode = 'custom';
-            if (slicerQualityGlobal) slicerQualityGlobal.value = 'custom';
-            renderPadsGrid();
-          });
-          pad.appendChild(fixBtn);
+          if (recPreset.maxSec > preset.maxSec) {
+            const fixBtn = document.createElement('button');
+            fixBtn.style.cssText = 'font-size: 0.58rem; background: rgba(255,214,0,0.15); color: #ffd600; border: 1px solid rgba(255,214,0,0.35); border-radius: 4px; padding: 1px 4px; cursor: pointer; margin-top: 2px; font-family: "JetBrains Mono", monospace; font-weight: 700;';
+            fixBtn.textContent = `⚡ Usar ${recPreset.label}`;
+            fixBtn.title = `Cambiar calidad a ${recPreset.name} para admitir mayor duración`;
+            fixBtn.addEventListener('click', (ev) => {
+              ev.stopPropagation();
+              padQualities[i] = recKey;
+              globalQualityMode = 'custom';
+              if (slicerQualityGlobal) slicerQualityGlobal.value = 'custom';
+              renderPadsGrid();
+            });
+            pad.appendChild(fixBtn);
+          }
         } else {
           if (globalQualityMode === 'custom') {
             const qSelect = document.createElement('select');
@@ -1066,7 +1072,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (slicerPadsStatus) {
       if (warningCount > 0) {
-        slicerPadsStatus.innerHTML = `<span style="color: #ff9100; font-weight: 700;">⚠️ ${warningCount} chop(s) exceden el límite de RAM</span>`;
+        slicerPadsStatus.innerHTML = `<span style="color: #ff9100; font-weight: 700;">⚠️ ${warningCount} chop(s) exceden límite (se guardará su inicio)</span>`;
       } else {
         slicerPadsStatus.innerHTML = `<span style="color: var(--cyan); font-weight: 600;">✓ 16 Chops listos en memoria</span>`;
       }
@@ -1220,7 +1226,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return rendered.getChannelData(0);
   }
 
-  function encodeWAVPCM(float32Array, sampleRate, bitDepth) {
+  function encodeWAVPCM(float32Array, sampleRate, bitDepth, emu12 = false) {
     const channelCount = 1;
     const bytesPerSample = bitDepth === 16 ? 2 : 1;
     const blockAlign = channelCount * bytesPerSample;
@@ -1257,12 +1263,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (bitDepth === 16) {
       for (let i = 0; i < totalSamples; i++) {
         let s = Math.max(-1, Math.min(1, float32Array[i]));
-        const pcm = s < 0 ? s * 0x8000 : s * 0x7FFF;
+        let pcm = s < 0 ? Math.floor(s * 0x8000) : Math.floor(s * 0x7FFF);
+        if (emu12) {
+          pcm = pcm & 0xFFF0; // Máscara 12-bit SP-1200
+        }
         view.setInt16(offset, pcm, true);
         offset += 2;
       }
     } else {
-      // 8-bit PCM signed para el motor del MiniJammer
+      // 8-bit PCM signed para el motor del MiniJammer (-128..127)
       for (let i = 0; i < totalSamples; i++) {
         let s = Math.max(-1, Math.min(1, float32Array[i]));
         const pcm8 = Math.max(-128, Math.min(127, Math.floor(s * 127)));
@@ -1274,7 +1283,56 @@ document.addEventListener('DOMContentLoaded', () => {
     return new Blob([buffer], { type: 'audio/wav' });
   }
 
-  // Exportar 16 WAVs en ZIP
+  // 1. Exportar Chops Completos (Sin recorte para DAWs / Samplers de terceros)
+  if (exportFullWavsBtn) {
+    exportFullWavsBtn.addEventListener('click', async () => {
+      if (!slicerAudioBuffer || getSliceCount() === 0) return;
+      exportFullWavsBtn.disabled = true;
+      const origText = exportFullWavsBtn.textContent;
+      exportFullWavsBtn.textContent = 'Procesando Chops Completos...';
+
+      try {
+        const zip = new JSZip();
+        const sliceCount = getSliceCount();
+        const origSampleRate = slicerAudioBuffer.sampleRate;
+        const numChannels = slicerAudioBuffer.numberOfChannels;
+
+        for (let i = 0; i < sliceCount; i++) {
+          const start = slicerSlices[i];
+          const end = slicerSlices[i + 1];
+          const sliceLen = Math.max(10, end - start);
+
+          const sliceBuffer = slicerAudioCtx.createBuffer(numChannels, sliceLen, origSampleRate);
+          for (let ch = 0; ch < numChannels; ch++) {
+            const srcData = slicerAudioBuffer.getChannelData(ch);
+            const dstData = sliceBuffer.getChannelData(ch);
+            for (let s = 0; s < sliceLen; s++) {
+              dstData[s] = srcData[start + s];
+            }
+          }
+
+          const wavBlob = encodeWAV16Bit(sliceBuffer, numChannels);
+          const padName = `CHOP_${String(i + 1).padStart(2, '0')}.WAV`;
+          zip.file(padName, wavBlob);
+        }
+
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(zipBlob);
+        a.download = `minijammer_chops_completos_DAW_${Date.now()}.zip`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+      } catch (err) {
+        alert("Error al exportar chops completos: " + err.message);
+        console.error(err);
+      } finally {
+        exportFullWavsBtn.textContent = origText;
+        exportFullWavsBtn.disabled = false;
+      }
+    });
+  }
+
+  // 2. Exportar 16 WAVs en ZIP ajustados a la RAM del MiniJammer
   if (exportWavsBtn) {
     exportWavsBtn.addEventListener('click', async () => {
       if (!slicerAudioBuffer || getSliceCount() === 0) return;
@@ -1293,20 +1351,24 @@ document.addEventListener('DOMContentLoaded', () => {
           const end = slicerSlices[i + 1];
           const durationSec = (end - start) / origSampleRate;
 
-          let qKey = padQualities[i] || '22k16';
-          let preset = QUALITY_PRESETS[qKey] || QUALITY_PRESETS['22k16'];
+          let qKey = padQualities[i] || 'lofi';
+          let preset = QUALITY_PRESETS[qKey] || QUALITY_PRESETS['lofi'];
 
           if (autoAdjust && durationSec > preset.maxSec) {
             qKey = getRecommendedQuality(durationSec);
             preset = QUALITY_PRESETS[qKey];
           }
 
-          let monoSamples = await extractAndResampleSlice(slicerAudioBuffer, start, end, preset.sampleRate);
+          // Respetar inicio exacto y recortar al fragmento máximo permitido por la RAM
+          const maxSamplesInOrig = Math.round(preset.maxSec * origSampleRate);
+          const effectiveEnd = Math.min(end, start + maxSamplesInOrig);
+
+          let monoSamples = await extractAndResampleSlice(slicerAudioBuffer, start, effectiveEnd, preset.sampleRate);
           if (monoSamples.length > preset.maxSamples) {
             monoSamples = monoSamples.subarray(0, preset.maxSamples);
           }
 
-          const wavBlob = encodeWAVPCM(monoSamples, preset.sampleRate, preset.bitDepth);
+          const wavBlob = encodeWAVPCM(monoSamples, preset.sampleRate, preset.bitDepth, preset.emu12);
           const padName = `PAD_${String(i + 1).padStart(2, '0')}.WAV`;
           zip.file(padName, wavBlob);
         }
@@ -1314,7 +1376,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const zipBlob = await zip.generateAsync({ type: 'blob' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(zipBlob);
-        a.download = `minijammer_chops_16wavs_${Date.now()}.zip`;
+        a.download = `minijammer_chops_16wavs_RAM_${Date.now()}.zip`;
         a.click();
         URL.revokeObjectURL(a.href);
       } catch (err) {
@@ -1327,7 +1389,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Exportar Proyecto Completo /JAM_XX/
+  // 3. Exportar Proyecto Completo /JAM_XX/ para MicroSD del MiniJammer
   if (exportJamBtn) {
     exportJamBtn.addEventListener('click', async () => {
       if (!slicerAudioBuffer || getSliceCount() === 0) return;
@@ -1362,20 +1424,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const end = slicerSlices[i + 1];
             const durationSec = (end - start) / origSampleRate;
 
-            let qKey = padQualities[i] || '22k16';
-            let preset = QUALITY_PRESETS[qKey] || QUALITY_PRESETS['22k16'];
+            let qKey = padQualities[i] || 'lofi';
+            let preset = QUALITY_PRESETS[qKey] || QUALITY_PRESETS['lofi'];
 
             if (autoAdjust && durationSec > preset.maxSec) {
               qKey = getRecommendedQuality(durationSec);
               preset = QUALITY_PRESETS[qKey];
             }
 
-            let monoSamples = await extractAndResampleSlice(slicerAudioBuffer, start, end, preset.sampleRate);
+            // Respetar inicio exacto y recortar al fragmento máximo permitido por la RAM
+            const maxSamplesInOrig = Math.round(preset.maxSec * origSampleRate);
+            const effectiveEnd = Math.min(end, start + maxSamplesInOrig);
+
+            let monoSamples = await extractAndResampleSlice(slicerAudioBuffer, start, effectiveEnd, preset.sampleRate);
             if (monoSamples.length > preset.maxSamples) {
               monoSamples = monoSamples.subarray(0, preset.maxSamples);
             }
 
-            const wavBlob = encodeWAVPCM(monoSamples, preset.sampleRate, preset.bitDepth);
+            const wavBlob = encodeWAVPCM(monoSamples, preset.sampleRate, preset.bitDepth, preset.emu12);
             const padFilename = `PAD_${String(i + 1).padStart(2, '0')}.WAV`;
             folder.file(padFilename, wavBlob);
 
@@ -1427,5 +1493,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
 
 

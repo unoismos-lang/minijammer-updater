@@ -10,7 +10,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=6.0">
+  <link rel="stylesheet" href="styles.css?v=7.0">
 
   <!-- JSZip para empaquetado de carpetas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -350,10 +350,12 @@
                 <div style="display: flex; align-items: center; gap: 8px;">
                   <label for="slicer-quality-global" style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);">Calidad / RAM:</label>
                   <select id="slicer-quality-global" style="background: #121621; color: #ffd600; font-weight: 600; border: 1px solid var(--bg-card-border); padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; outline: none; cursor: pointer;">
-                    <option value="22k16" selected>🔥 Estándar (22.05kHz / 16b) — Máx 10.0s/pad</option>
-                    <option value="44k16">⚡ Hi-Fi (44.1kHz / 16b) — Máx 5.0s/pad</option>
-                    <option value="22k8">📻 Lo-Fi (22.05kHz / 8b) — Máx 20.0s/pad</option>
-                    <option value="11k8">📼 Vintage (11.025kHz / 8b) — Máx 40.0s/pad</option>
+                    <option value="lofi" selected>🔥 LOFI (22.05kHz / 16b) — Máx 10.0s</option>
+                    <option value="hifi">⚡ HIFI (44.1kHz / 16b) — Máx 5.0s</option>
+                    <option value="12_emu">🎛️ 12-EMU SP-1200 (22.05kHz / 12b) — Máx 10.0s</option>
+                    <option value="crunch">📻 CRUNCH (22.05kHz / 8b) — Máx 20.0s</option>
+                    <option value="vintage">📼 VINTAGE SP-1200 (11.025kHz / 12b) — Máx 20.0s</option>
+                    <option value="extreme">👾 EXTREMO (11.025kHz / 8b) — Máx 40.0s</option>
                     <option value="custom">🛠️ Configurar por Pad Individual</option>
                   </select>
                 </div>
@@ -416,18 +418,23 @@
                 </div>
 
                 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                  <button id="export-wavs-btn" class="btn btn-primary glow-cyan-dim" style="padding: 8px 14px; font-size: 0.85rem; min-height: auto; min-width: auto; margin-top: 0;">
-                    📦 Descargar 16 WAVs (.ZIP)
+                  <button id="export-full-wavs-btn" class="btn btn-primary" style="padding: 8px 14px; font-size: 0.85rem; min-height: auto; min-width: auto; margin-top: 0; background: rgba(0, 229, 255, 0.12); border-color: rgba(0, 229, 255, 0.4); color: var(--cyan);" title="Descargar todos los cortes con su duración original completa sin recortar para DAWs">
+                    💾 Exportar Chops Completos (Sin recorte / DAWs)
                   </button>
-                  <button id="export-jam-btn" class="btn btn-primary glow-orange" style="padding: 8px 16px; font-size: 0.85rem; min-height: auto; min-width: auto; margin-top: 0;">
-                    ⚡ Exportar Proyecto MiniJammer (/JAM_XX/)
+                  <button id="export-wavs-btn" class="btn btn-primary glow-cyan-dim" style="padding: 8px 14px; font-size: 0.85rem; min-height: auto; min-width: auto; margin-top: 0;" title="Descargar 16 WAVs ajustados exactamente al límite de RAM del MiniJammer">
+                    📦 16 WAVs MiniJammer (Límite RAM)
+                  </button>
+                  <button id="export-jam-btn" class="btn btn-primary glow-orange" style="padding: 8px 16px; font-size: 0.85rem; min-height: auto; min-width: auto; margin-top: 0;" title="Exportar carpeta /JAM_XX/ con PROJECT.JAM para la MicroSD">
+                    ⚡ Proyecto /JAM_XX/ (MicroSD)
                   </button>
                 </div>
               </div>
 
               <div style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text-muted); padding-top: 4px; border-top: 1px solid rgba(255, 255, 255, 0.05);">
                 <input type="checkbox" id="export-autoadjust-quality" checked style="accent-color: #ffd600; cursor: pointer;">
-                <label for="export-autoadjust-quality" style="cursor: pointer;">Auto-adaptar calidad si algún chop excede su límite de tiempo para que quepa completo sin recortar</label>
+                <label for="export-autoadjust-quality" style="cursor: pointer;">
+                  Auto-adaptar calidad si un corte excede su límite de RAM (hasta máx 40s en EXTREMO; si pasa de 40s se guardará respetando el inicio hasta el límite exacto)
+                </label>
               </div>
             </div>
 
@@ -637,7 +644,7 @@
     </div>
   </div>
 
-  <script src="app.js?v=6.0"></script>
+  <script src="app.js?v=7.0"></script>
 </body>
 
 </html>

@@ -35,6 +35,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (targetPanel) {
         targetPanel.classList.add('active');
       }
+
+      // Detener cualquier audio en reproduccion al cambiar de pestaña
+      if (typeof stopSlicePlayback === 'function') {
+        stopSlicePlayback();
+      }
     });
   });
 
@@ -550,7 +555,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let slicerAudioBuffer = null;
   let slicerSlices = []; // Array de marcadores en samples: [0, s1, s2, ..., totalSamples]
-  let activeAudioSource = null;
+  let activeAudioSources = [];
   let activePlayingSlice = -1;
   let draggingMarkerIdx = -1;
   let slicerAudioCtx = null;
@@ -563,13 +568,13 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   function stopSlicePlayback() {
-    if (activeAudioSource) {
+    activeAudioSources.forEach(src => {
       try {
-        activeAudioSource.stop();
-        activeAudioSource.disconnect();
+        src.stop(0);
+        src.disconnect();
       } catch (e) {}
-      activeAudioSource = null;
-    }
+    });
+    activeAudioSources = [];
     activePlayingSlice = -1;
     if (slicerPadsGrid) {
       const allPads = slicerPadsGrid.querySelectorAll('.slicer-pad');
@@ -578,7 +583,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (slicerStopBtn) {
-    slicerStopBtn.addEventListener('click', stopSlicePlayback);
+    slicerStopBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      stopSlicePlayback();
+    });
   }
 
   // Atajos de teclado para tocar los 16 pads y botón Stop (Espacio / Esc)
@@ -917,12 +926,7 @@ document.addEventListener('DOMContentLoaded', () => {
       slicerAudioCtx.resume();
     }
 
-    if (activeAudioSource) {
-      try {
-        activeAudioSource.stop();
-        activeAudioSource.disconnect();
-      } catch (e) {}
-    }
+    stopSlicePlayback();
 
     const startSample = slicerSlices[index];
     const endSample = slicerSlices[index + 1];
@@ -935,7 +939,7 @@ document.addEventListener('DOMContentLoaded', () => {
     source.connect(slicerAudioCtx.destination);
     source.start(0, startTime, duration);
 
-    activeAudioSource = source;
+    activeAudioSources.push(source);
     activePlayingSlice = index;
 
     if (slicerPadsGrid) {
@@ -947,6 +951,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     source.onended = () => {
+      const idx = activeAudioSources.indexOf(source);
+      if (idx !== -1) activeAudioSources.splice(idx, 1);
       if (activePlayingSlice === index) {
         if (slicerPadsGrid) {
           const allPads = slicerPadsGrid.querySelectorAll('.slicer-pad');

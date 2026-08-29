@@ -12,6 +12,9 @@
     rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 
+  <!-- JSZip para empaquetado de carpetas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
   <!-- ESP Web Tools Oficial (Web Serial API) -->
   <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
 </head>
@@ -64,8 +67,15 @@
           <span class="tab-sub">Pads y Controles</span>
         </span>
       </button>
-      <button class="tab-btn" data-tab="tab-guia">
+      <button class="tab-btn" data-tab="tab-converter">
         <span class="tab-num">3</span>
+        <span class="tab-info">
+          <span class="tab-title">Convertidor Audio</span>
+          <span class="tab-sub">Preparar archivos WAV</span>
+        </span>
+      </button>
+      <button class="tab-btn" data-tab="tab-guia">
+        <span class="tab-num">4</span>
         <span class="tab-info">
           <span class="tab-title">Guía y Ayuda</span>
           <span class="tab-sub">Solución de problemas</span>
@@ -207,7 +217,77 @@
         </div>
       </section>
 
-      <!-- ================= PESTAÑA 3: GUÍA & AYUDA ================= -->
+      <!-- ================= PESTAÑA 3: CONVERTIDOR ================= -->
+      <section id="tab-converter" class="tab-panel">
+        <div class="card glass-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="chip chip-cyan" style="background: rgba(0, 229, 255, 0.15); color: var(--cyan); border: 1px solid rgba(0, 229, 255, 0.3);">PREPARACIÓN DE AUDIO</span>
+              <h2>Convertidor de Audio WAV</h2>
+            </div>
+            <span style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">Procesamiento 100% Local</span>
+          </div>
+
+          <p class="card-desc" style="margin-bottom: 20px;">
+            Convierte archivos FLAC, MP3, M4A, OGG o WAV de cualquier calidad a WAV optimizado para tu MiniJammer XXL. Si cargas carpetas completas, se preservará la estructura original de carpetas y subcarpetas al descargar el archivo ZIP.
+          </p>
+
+          <!-- Opciones de Formato -->
+          <div class="converter-options" style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 24px; padding: 16px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 10px;">
+            <div class="option-group" style="display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 240px;">
+              <label style="font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
+                <span>🎯 Formato de Salida:</span>
+              </label>
+              <select id="conv-mode" style="background: #121621; color: var(--text-main); border: 1px solid var(--bg-card-border); padding: 10px; border-radius: 8px; font-family: 'Outfit', sans-serif; cursor: pointer; outline: none; width: 100%;">
+                <option value="mono" selected>Modo Sampler (16-bit Mono, 44.1kHz) - Optimizado para pads</option>
+                <option value="stereo">Modo MiniPlayer / Escucha (16-bit Estéreo, 44.1kHz)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Área de Drop -->
+          <div id="drop-zone" class="drop-zone" style="border: 2px dashed rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 40px 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; background: rgba(0, 229, 255, 0.01); display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 24px;">
+            <div style="font-size: 3rem; filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.3));">🎵</div>
+            <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-main);">Arrastra aquí tus archivos o carpetas completas</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Soporta MP3, FLAC, M4A, WAV, etc.</div>
+            <div style="display: flex; gap: 12px; margin-top: 8px;">
+              <button id="select-files-btn" class="btn btn-primary glow-cyan-dim" style="padding: 8px 16px; font-size: 0.85rem; margin-top: 0; min-height: auto; min-width: auto; background: rgba(0, 229, 255, 0.1);">Buscar Archivos</button>
+              <button id="select-folder-btn" class="btn btn-primary glow-cyan-dim" style="padding: 8px 16px; font-size: 0.85rem; margin-top: 0; min-height: auto; min-width: auto; background: rgba(0, 229, 255, 0.1);">Buscar Carpeta</button>
+            </div>
+            <input type="file" id="file-input" multiple accept="audio/*" style="display: none;">
+            <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;">
+          </div>
+
+          <!-- Panel de Control de Lote -->
+          <div id="batch-control" class="hidden" style="margin-bottom: 24px; padding: 16px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <span id="batch-status" style="font-weight: 600; font-size: 0.95rem;">Listo para convertir</span>
+              <span id="batch-count" style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-muted);">0 / 0 archivos</span>
+            </div>
+            
+            <!-- Barra de progreso general -->
+            <div style="width: 100%; height: 8px; background: rgba(255, 255, 255, 0.05); border-radius: 4px; overflow: hidden; margin-bottom: 16px;">
+              <div id="batch-progress" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--cyan), #ba68c8); border-radius: 4px; transition: width 0.3s ease;"></div>
+            </div>
+
+            <div style="display: flex; gap: 12px; justify-content: flex-end;">
+              <button id="clear-queue-btn" class="btn btn-primary" style="padding: 8px 16px; font-size: 0.9rem; margin-top: 0; min-height: auto; min-width: auto; background: rgba(255, 61, 113, 0.1); border-color: rgba(255, 61, 113, 0.3); color: var(--red);">Limpiar Cola</button>
+              <button id="convert-queue-btn" class="btn btn-primary glow-cyan" style="padding: 8px 16px; font-size: 0.9rem; margin-top: 0; min-height: auto; min-width: auto;">Convertir Cola</button>
+              <button id="download-zip-btn" class="btn btn-primary glow-orange hidden" style="padding: 8px 16px; font-size: 0.9rem; margin-top: 0; min-height: auto; min-width: auto;">Descargar todo (.ZIP)</button>
+            </div>
+          </div>
+
+          <!-- Lista de Archivos -->
+          <div id="files-container" class="hidden">
+            <h3 style="font-size: 1rem; margin-bottom: 12px; color: #fff; font-weight: 700; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 8px;">Archivos en la cola</h3>
+            <div id="files-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto; padding-right: 6px;">
+              <!-- Generado dinámicamente -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PESTAÑA 4: GUÍA & AYUDA ================= -->
       <section id="tab-guia" class="tab-panel">
         <div class="card glass-card">
           <h2>Preguntas Frecuentes y Solución de Problemas</h2>

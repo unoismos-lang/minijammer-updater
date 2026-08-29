@@ -173,7 +173,7 @@ body {
 /* Tabs Navigation */
 .tabs-nav {
   display: grid;
-  grid-template-columns: 1fr 1fr auto;
+  grid-template-columns: 1fr 1fr 1fr auto;
   gap: 12px;
   margin-bottom: 24px;
 }
@@ -641,6 +641,110 @@ code {
   color: var(--text-muted);
   line-height: 1.6;
   margin-bottom: 8px;
+}
+
+/* Estilos para el Convertidor de Audio */
+.drop-zone.dragover {
+  border-color: var(--cyan) !important;
+  background: rgba(0, 229, 255, 0.06) !important;
+  box-shadow: 0 0 25px rgba(0, 229, 255, 0.2);
+}
+
+.file-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 10px 16px;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+.file-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.file-name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-main);
+}
+
+.file-path {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.status-queued {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+}
+
+.status-processing {
+  background: rgba(0, 229, 255, 0.1);
+  color: var(--cyan);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+}
+
+.status-success {
+  background: rgba(40, 167, 69, 0.1);
+  color: #28a745;
+  border: 1px solid rgba(40, 167, 69, 0.2);
+}
+
+.status-error {
+  background: rgba(255, 61, 113, 0.1);
+  color: var(--red);
+  border: 1px solid rgba(255, 61, 113, 0.2);
+}
+
+.glow-cyan-dim {
+  background: rgba(0, 229, 255, 0.05);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  color: var(--cyan);
+}
+
+.glow-cyan-dim:hover {
+  background: rgba(0, 229, 255, 0.15);
+  border-color: var(--cyan);
+  color: #fff;
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.15);
+}
+
+.glow-orange-dim {
+  background: rgba(255, 145, 0, 0.05);
+  border: 1px solid rgba(255, 145, 0, 0.2);
+  color: var(--orange);
+}
+
+.glow-orange-dim:hover {
+  background: rgba(255, 145, 0, 0.15);
+  border-color: var(--orange);
+  color: #fff;
+  box-shadow: 0 0 15px rgba(255, 145, 0, 0.15);
 }
 
 @media (max-width: 640px) {

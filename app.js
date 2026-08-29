@@ -539,6 +539,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const slicerSensitivityVal = document.getElementById('slicer-sensitivity-val');
   const sensitivityContainer = document.getElementById('sensitivity-container');
   const slicerRechopBtn = document.getElementById('slicer-rechop-btn');
+  const slicerStopBtn = document.getElementById('slicer-stop-btn');
   const waveformCanvas = document.getElementById('waveform-canvas');
   const waveformLoading = document.getElementById('waveform-loading');
   const slicerAudioInfo = document.getElementById('slicer-audio-info');
@@ -561,11 +562,36 @@ document.addEventListener('DOMContentLoaded', () => {
     'z', 'x', 'c', 'v'
   ];
 
-  // Atajos de teclado para tocar los 16 pads
+  function stopSlicePlayback() {
+    if (activeAudioSource) {
+      try {
+        activeAudioSource.stop();
+        activeAudioSource.disconnect();
+      } catch (e) {}
+      activeAudioSource = null;
+    }
+    activePlayingSlice = -1;
+    if (slicerPadsGrid) {
+      const allPads = slicerPadsGrid.querySelectorAll('.slicer-pad');
+      allPads.forEach(p => p.classList.remove('playing'));
+    }
+  }
+
+  if (slicerStopBtn) {
+    slicerStopBtn.addEventListener('click', stopSlicePlayback);
+  }
+
+  // Atajos de teclado para tocar los 16 pads y botón Stop (Espacio / Esc)
   window.addEventListener('keydown', (e) => {
     const tabSlicer = document.getElementById('tab-slicer');
     if (!tabSlicer || !tabSlicer.classList.contains('active')) return;
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
+
+    if (e.key === ' ' || e.key === 'Escape') {
+      e.preventDefault();
+      stopSlicePlayback();
+      return;
+    }
 
     const key = e.key.toLowerCase();
     const padIdx = keyMap.indexOf(key);

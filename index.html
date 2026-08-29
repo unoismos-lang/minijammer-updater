@@ -395,26 +395,39 @@
             <!-- Panel de Exportación -->
             <div style="padding: 16px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 12px; display: flex; flex-direction: column; gap: 12px;">
               <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <label for="export-jam-bank" style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);">Banco Destino:</label>
-                  <select id="export-jam-bank" style="background: #121621; color: var(--cyan); font-weight: 700; font-family: 'JetBrains Mono', monospace; border: 1px solid var(--bg-card-border); padding: 6px 12px; border-radius: 8px; outline: none; cursor: pointer;">
-                    <option value="0">JAM_00</option>
-                    <option value="1" selected>JAM_01</option>
-                    <option value="2">JAM_02</option>
-                    <option value="3">JAM_03</option>
-                    <option value="4">JAM_04</option>
-                    <option value="5">JAM_05</option>
-                    <option value="6">JAM_06</option>
-                    <option value="7">JAM_07</option>
-                    <option value="8">JAM_08</option>
-                    <option value="9">JAM_09</option>
-                    <option value="10">JAM_10</option>
-                    <option value="11">JAM_11</option>
-                    <option value="12">JAM_12</option>
-                    <option value="13">JAM_13</option>
-                    <option value="14">JAM_14</option>
-                    <option value="15">JAM_15</option>
-                  </select>
+                <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <label for="export-jam-bank" style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);">Banco Destino:</label>
+                    <select id="export-jam-bank" style="background: #121621; color: var(--cyan); font-weight: 700; font-family: 'JetBrains Mono', monospace; border: 1px solid var(--bg-card-border); padding: 6px 10px; border-radius: 8px; outline: none; cursor: pointer;">
+                      <option value="0">JAM_00</option>
+                      <option value="1" selected>JAM_01</option>
+                      <option value="2">JAM_02</option>
+                      <option value="3">JAM_03</option>
+                      <option value="4">JAM_04</option>
+                      <option value="5">JAM_05</option>
+                      <option value="6">JAM_06</option>
+                      <option value="7">JAM_07</option>
+                      <option value="8">JAM_08</option>
+                      <option value="9">JAM_09</option>
+                      <option value="10">JAM_10</option>
+                      <option value="11">JAM_11</option>
+                      <option value="12">JAM_12</option>
+                      <option value="13">JAM_13</option>
+                      <option value="14">JAM_14</option>
+                      <option value="15">JAM_15</option>
+                    </select>
+                  </div>
+
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <label for="export-jam-gain" style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);">Ganancia / Headroom:</label>
+                    <select id="export-jam-gain" style="background: #121621; color: #ffd600; font-weight: 700; font-family: 'JetBrains Mono', monospace; border: 1px solid var(--bg-card-border); padding: 6px 10px; border-radius: 8px; outline: none; cursor: pointer;">
+                      <option value="1.0">100% (0 dB - Directo)</option>
+                      <option value="0.85">85% (-1.4 dB)</option>
+                      <option value="0.75" selected>75% (-2.5 dB - Recomendado)</option>
+                      <option value="0.60">60% (-4.4 dB)</option>
+                      <option value="0.50">50% (-6.0 dB)</option>
+                    </select>
+                  </div>
                 </div>
 
                 <div style="display: flex; gap: 10px; flex-wrap: wrap;">

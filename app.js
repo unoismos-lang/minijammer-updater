@@ -617,6 +617,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const slicerQualityGlobal = document.getElementById('slicer-quality-global');
   const exportAutoadjustQuality = document.getElementById('export-autoadjust-quality');
   const exportJamBankSelect = document.getElementById('export-jam-bank');
+  const exportJamGainSelect = document.getElementById('export-jam-gain');
   const exportFullWavsBtn = document.getElementById('export-full-wavs-btn');
   const exportWavsBtn = document.getElementById('export-wavs-btn');
   const exportJamBtn = document.getElementById('export-jam-btn');
@@ -1345,6 +1346,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const sliceCount = Math.min(16, getSliceCount());
         const origSampleRate = slicerAudioBuffer.sampleRate;
         const autoAdjust = exportAutoadjustQuality ? exportAutoadjustQuality.checked : true;
+        const gain = exportJamGainSelect ? parseFloat(exportJamGainSelect.value) : 0.75;
 
         for (let i = 0; i < sliceCount; i++) {
           const start = slicerSlices[i];
@@ -1366,6 +1368,10 @@ document.addEventListener('DOMContentLoaded', () => {
           let monoSamples = await extractAndResampleSlice(slicerAudioBuffer, start, effectiveEnd, preset.sampleRate);
           if (monoSamples.length > preset.maxSamples) {
             monoSamples = monoSamples.subarray(0, preset.maxSamples);
+          }
+
+          if (gain !== 1.0) {
+            for (let s = 0; s < monoSamples.length; s++) monoSamples[s] *= gain;
           }
 
           const wavBlob = encodeWAVPCM(monoSamples, preset.sampleRate, preset.bitDepth, preset.emu12);
@@ -1406,6 +1412,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const sliceCount = Math.min(16, getSliceCount());
         const origSampleRate = slicerAudioBuffer.sampleRate;
         const autoAdjust = exportAutoadjustQuality ? exportAutoadjustQuality.checked : true;
+        const gain = exportJamGainSelect ? parseFloat(exportJamGainSelect.value) : 0.75;
 
         // 1. Estructura binaria BankSaveData (972 bytes)
         const bankDataBuffer = new ArrayBuffer(972);
@@ -1441,6 +1448,10 @@ document.addEventListener('DOMContentLoaded', () => {
               monoSamples = monoSamples.subarray(0, preset.maxSamples);
             }
 
+            if (gain !== 1.0) {
+              for (let s = 0; s < monoSamples.length; s++) monoSamples[s] *= gain;
+            }
+
             const wavBlob = encodeWAVPCM(monoSamples, preset.sampleRate, preset.bitDepth, preset.emu12);
             const padFilename = `PAD_${String(i + 1).padStart(2, '0')}.WAV`;
             folder.file(padFilename, wavBlob);
@@ -1457,7 +1468,7 @@ document.addEventListener('DOMContentLoaded', () => {
             view.setUint32(padOffset + 36, 0, true);
           }
 
-          view.setFloat32(padOffset + 40, 1.0, true);  // volume = 1.0
+          view.setFloat32(padOffset + 40, gain, true); // volume = gain (ej. 0.75 / 75%)
           view.setFloat32(padOffset + 44, 1.0, true);  // pitch = 1.0
           view.setFloat32(padOffset + 48, 0.0, true);  // attack = 0.0
           view.setFloat32(padOffset + 52, 0.0, true);  // release = 0.0

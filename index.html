@@ -10,7 +10,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=3.0">
 
   <!-- JSZip para empaquetado de carpetas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -251,11 +251,11 @@
             <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-main);">Arrastra aquí tus archivos o carpetas completas</div>
             <div style="font-size: 0.8rem; color: var(--text-muted);">Soporta MP3, FLAC, M4A, WAV, etc.</div>
             <div style="display: flex; gap: 12px; margin-top: 8px;">
-              <button id="select-files-btn" class="btn btn-primary glow-cyan-dim" style="padding: 8px 16px; font-size: 0.85rem; margin-top: 0; min-height: auto; min-width: auto; background: rgba(0, 229, 255, 0.1);">Buscar Archivos</button>
-              <button id="select-folder-btn" class="btn btn-primary glow-cyan-dim" style="padding: 8px 16px; font-size: 0.85rem; margin-top: 0; min-height: auto; min-width: auto; background: rgba(0, 229, 255, 0.1);">Buscar Carpeta</button>
+              <label for="file-input" class="btn btn-primary glow-cyan-dim" style="padding: 8px 16px; font-size: 0.85rem; margin-top: 0; min-height: auto; min-width: auto; background: rgba(0, 229, 255, 0.1); cursor: pointer; display: inline-flex; align-items: center;">Buscar Archivos</label>
+              <label for="folder-input" class="btn btn-primary glow-cyan-dim" style="padding: 8px 16px; font-size: 0.85rem; margin-top: 0; min-height: auto; min-width: auto; background: rgba(0, 229, 255, 0.1); cursor: pointer; display: inline-flex; align-items: center;">Buscar Carpeta</label>
             </div>
-            <input type="file" id="file-input" multiple accept="audio/*" style="display: none;">
-            <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;">
+            <input type="file" id="file-input" multiple accept="audio/*" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;">
+            <input type="file" id="folder-input" webkitdirectory directory multiple style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;">
           </div>
 
           <!-- Panel de Control de Lote -->
@@ -489,7 +489,7 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=3.0"></script>
 </body>
 
 </html>

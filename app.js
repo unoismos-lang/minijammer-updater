@@ -1,3 +1,15 @@
+// =========================================================================
+//  PREVENCIÓN GLOBAL DE NAVEGACIÓN EN DRAG & DROP
+// =========================================================================
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+  window.addEventListener(eventName, (e) => {
+    e.preventDefault();
+  }, false);
+  document.addEventListener(eventName, (e) => {
+    e.preventDefault();
+  }, false);
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Comprobación de compatibilidad con Web Serial
   const warningBanner = document.getElementById('browser-warning');
@@ -15,11 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', () => {
       const targetId = btn.getAttribute('data-tab');
 
-      // Remover activo de todos los botones y paneles
       tabBtns.forEach(b => b.classList.remove('active'));
       tabPanels.forEach(p => p.classList.remove('active'));
 
-      // Activar el seleccionado
       btn.classList.add('active');
       const targetPanel = document.getElementById(targetId);
       if (targetPanel) {
@@ -46,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const targetModal = document.getElementById(modalId);
       if (targetModal) {
         targetModal.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Evitar scroll de fondo
+        document.body.style.overflow = 'hidden';
       }
     });
   });
@@ -71,8 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const dropZone = document.getElementById('drop-zone');
   const fileInput = document.getElementById('file-input');
   const folderInput = document.getElementById('folder-input');
-  const selectFilesBtn = document.getElementById('select-files-btn');
-  const selectFolderBtn = document.getElementById('select-folder-btn');
   
   const batchControl = document.getElementById('batch-control');
   const batchStatus = document.getElementById('batch-status');
@@ -87,106 +95,119 @@ document.addEventListener('DOMContentLoaded', () => {
   const filesList = document.getElementById('files-list');
   const convModeSelect = document.getElementById('conv-mode');
 
-  let conversionQueue = []; // { file, path, status, blob, rowElement }
+  if (!dropZone || !fileInput || !folderInput) {
+    console.error("No se encontraron los elementos necesarios del convertidor de audio.");
+    return;
+  }
+
+  let conversionQueue = [];
   let isConverting = false;
 
-  // Evitar que el navegador abra los archivos si se arrastran fuera de la zona
-  window.addEventListener('dragover', (e) => {
-    e.preventDefault();
-  }, false);
-  window.addEventListener('drop', (e) => {
-    e.preventDefault();
-  }, false);
-
-  // Zona de Drop clickeable
-  dropZone.addEventListener('click', (e) => {
-    // Solo disparar si no se hizo clic en los botones internos
-    if (e.target !== selectFilesBtn && e.target !== selectFolderBtn) {
-      fileInput.click();
+  // Escuchar inputs de archivo y carpeta
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      handleFileObjects(Array.from(e.target.files));
+      fileInput.value = '';
     }
   });
 
-  // Botones de Búsqueda
-  selectFilesBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    fileInput.click();
-  });
-  
-  selectFolderBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    folderInput.click();
-  });
-
-  fileInput.addEventListener('change', (e) => {
-    handleFileObjects(Array.from(e.target.files));
-    fileInput.value = ''; // Reset
-  });
-
   folderInput.addEventListener('change', (e) => {
-    handleFileObjects(Array.from(e.target.files));
-    folderInput.value = ''; // Reset
+    if (e.target.files && e.target.files.length > 0) {
+      handleFileObjects(Array.from(e.target.files));
+      folderInput.value = '';
+    }
   });
 
-  // Eventos de Drag & Drop
-  dropZone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropZone.classList.add('dragover');
+  // Eventos visuales de Drag & Drop sobre la zona
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropZone.addEventListener(eventName, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropZone.classList.add('dragover');
+    }, false);
   });
 
-  dropZone.addEventListener('dragleave', () => {
-    dropZone.classList.remove('dragover');
+  ['dragleave', 'dragend'].forEach(eventName => {
+    dropZone.addEventListener(eventName, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropZone.classList.remove('dragover');
+    }, false);
   });
 
   dropZone.addEventListener('drop', async (e) => {
     e.preventDefault();
+    e.stopPropagation();
     dropZone.classList.remove('dragover');
 
     const items = e.dataTransfer.items;
-    if (!items) return;
-
+    const files = e.dataTransfer.files;
     const filesToLoad = [];
-    const entries = [];
 
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i];
-      if (item.kind === 'file') {
-        const entry = item.webkitGetAsEntry();
-        if (entry) {
-          entries.push(entry);
+    if (items && items.length > 0 && items[0].webkitGetAsEntry) {
+      const entries = [];
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.kind === 'file') {
+          const entry = item.webkitGetAsEntry();
+          if (entry) entries.push(entry);
         }
+      }
+      for (const entry of entries) {
+        await scanEntry(entry, '', filesToLoad);
+      }
+    } else if (files && files.length > 0) {
+      for (let i = 0; i < files.length; i++) {
+        filesToLoad.push({
+          file: files[i],
+          relativePath: files[i].webkitRelativePath || files[i].name
+        });
       }
     }
 
-    // Escaneo recursivo
-    for (const entry of entries) {
-      await scanEntry(entry, '', filesToLoad);
+    if (filesToLoad.length > 0) {
+      handleFileObjects(filesToLoad);
     }
+  }, false);
 
-    handleFileObjects(filesToLoad);
-  });
-
-  // Escaneo recursivo de directorios arrastrados
+  // Escaneo recursivo de carpetas arrastradas
   async function scanEntry(entry, path, filesList) {
     if (entry.isFile) {
-      const file = await new Promise(resolve => entry.file(resolve));
-      filesList.push({
-        file: file,
-        relativePath: path ? `${path}/${file.name}` : file.name
-      });
+      const file = await new Promise((resolve) => entry.file(resolve, () => resolve(null)));
+      if (file) {
+        filesList.push({
+          file: file,
+          relativePath: path ? `${path}/${file.name}` : file.name
+        });
+      }
     } else if (entry.isDirectory) {
       const dirReader = entry.createReader();
-      const entries = await new Promise((resolve) => {
-        dirReader.readEntries(resolve);
-      });
+      const readAllEntries = async () => {
+        let allEntries = [];
+        let readBatch = async () => {
+          let entries = await new Promise((resolve) => {
+            dirReader.readEntries(resolve, () => resolve([]));
+          });
+          if (entries.length > 0) {
+            allEntries = allEntries.concat(entries);
+            await readBatch();
+          }
+        };
+        await readBatch();
+        return allEntries;
+      };
+
+      const entries = await readAllEntries();
       for (const subEntry of entries) {
         await scanEntry(subEntry, path ? `${path}/${entry.name}` : entry.name, filesList);
       }
     }
   }
 
-  // Normalizar archivos desde inputs
+  // Filtrar y normalizar archivos de audio
   function handleFileObjects(fileList) {
     const audioFormats = /\.(mp3|flac|wav|m4a|ogg|aac|aif|aiff)$/i;
+    let addedCount = 0;
     
     fileList.forEach(item => {
       let fileObj, relPath;
@@ -198,42 +219,41 @@ document.addEventListener('DOMContentLoaded', () => {
         relPath = item.webkitRelativePath || item.name;
       }
 
-      if (audioFormats.test(fileObj.name)) {
-        // Evitar duplicados
+      if (fileObj && audioFormats.test(fileObj.name)) {
         if (!conversionQueue.some(q => q.path === relPath)) {
           addFileToQueue(fileObj, relPath);
+          addedCount++;
         }
       }
     });
 
-    updateQueueUI();
+    if (addedCount > 0 || conversionQueue.length > 0) {
+      updateQueueUI();
+    }
   }
 
-  // Añadir a la cola
   function addFileToQueue(file, path) {
-    const queueItem = {
+    conversionQueue.push({
       file: file,
       path: path,
-      status: 'queued', // queued, processing, success, error
+      status: 'queued',
       blob: null,
       rowElement: null
-    };
-    conversionQueue.push(queueItem);
+    });
   }
 
-  // Actualizar UI
   function updateQueueUI() {
     if (conversionQueue.length > 0) {
       batchControl.classList.remove('hidden');
       filesContainer.classList.remove('hidden');
-      downloadZipBtn.classList.add('hidden'); // Ocultar hasta terminar
+      downloadZipBtn.classList.add('hidden');
     } else {
       batchControl.classList.add('hidden');
       filesContainer.classList.add('hidden');
     }
 
     filesList.innerHTML = '';
-    conversionQueue.forEach((item, index) => {
+    conversionQueue.forEach((item) => {
       const row = document.createElement('div');
       row.className = 'file-row';
 
@@ -258,7 +278,6 @@ document.addEventListener('DOMContentLoaded', () => {
       row.appendChild(fileInfo);
       row.appendChild(statusBadge);
 
-      // Si terminó con éxito, añadir botón de descarga individual
       if (item.status === 'success' && item.blob) {
         const dlBtn = document.createElement('button');
         dlBtn.className = 'btn btn-primary glow-cyan-dim';
@@ -268,6 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dlBtn.style.minWidth = 'auto';
         dlBtn.style.marginTop = '0';
         dlBtn.textContent = '📥';
+        dlBtn.title = 'Descargar WAV individual';
         dlBtn.addEventListener('click', () => {
           triggerSingleDownload(item);
         });
@@ -293,14 +313,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Limpiar cola
   clearQueueBtn.addEventListener('click', () => {
     if (isConverting) return;
     conversionQueue = [];
     updateQueueUI();
   });
 
-  // Disparar la cola
+  // Procesamiento por lotes
   convertQueueBtn.addEventListener('click', async () => {
     if (isConverting || conversionQueue.length === 0) return;
     isConverting = true;
@@ -310,9 +329,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const mode = convModeSelect.value;
     let completedCount = 0;
-    
-    // Procesamiento en lotes concurrentes (máximo 3)
-    const activePromises = [];
     const queueToProcess = [...conversionQueue];
 
     batchStatus.textContent = 'Convirtiendo lote de audio...';
@@ -335,7 +351,6 @@ document.addEventListener('DOMContentLoaded', () => {
       updateRowStatus(item);
       completedCount++;
       
-      // Actualizar progreso general
       const progressPercent = (completedCount / conversionQueue.length) * 100;
       batchProgressBar.style.width = `${progressPercent}%`;
       batchCount.textContent = `${completedCount} / ${conversionQueue.length} archivos`;
@@ -343,7 +358,6 @@ document.addEventListener('DOMContentLoaded', () => {
       await processNext();
     }
 
-    // Lanzar hilos concurrentes
     const concurrencyLimit = Math.min(3, queueToProcess.length);
     const initialPromises = [];
     for (let i = 0; i < concurrencyLimit; i++) {
@@ -357,13 +371,11 @@ document.addEventListener('DOMContentLoaded', () => {
     convertQueueBtn.disabled = false;
     clearQueueBtn.disabled = false;
 
-    // Mostrar botón de ZIP si hay al menos una conversión exitosa
     if (conversionQueue.some(q => q.status === 'success')) {
       downloadZipBtn.classList.remove('hidden');
     }
   });
 
-  // Actualizar el estado de una fila
   function updateRowStatus(item) {
     if (!item.rowElement) return;
     const badge = item.rowElement.querySelector('.file-status');
@@ -372,7 +384,6 @@ document.addEventListener('DOMContentLoaded', () => {
       badge.textContent = getStatusText(item.status);
     }
     
-    // Si terminó con éxito y no tiene botón de descarga, añadirlo
     if (item.status === 'success' && item.blob && !item.rowElement.querySelector('button')) {
       const dlBtn = document.createElement('button');
       dlBtn.className = 'btn btn-primary glow-cyan-dim';
@@ -382,6 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
       dlBtn.style.minWidth = 'auto';
       dlBtn.style.marginTop = '0';
       dlBtn.textContent = '📥';
+      dlBtn.title = 'Descargar WAV individual';
       dlBtn.addEventListener('click', () => {
         triggerSingleDownload(item);
       });
@@ -389,7 +401,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Descargar archivo individual
   function triggerSingleDownload(item) {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(item.blob);
@@ -398,7 +409,6 @@ document.addEventListener('DOMContentLoaded', () => {
     URL.revokeObjectURL(a.href);
   }
 
-  // Descargar todo como ZIP preservando la estructura
   downloadZipBtn.addEventListener('click', async () => {
     downloadZipBtn.disabled = true;
     const originalText = downloadZipBtn.textContent;
@@ -408,7 +418,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const zip = new JSZip();
       conversionQueue.forEach(item => {
         if (item.status === 'success' && item.blob) {
-          // Reemplazar la extensión original por .wav en la ruta del ZIP
           const wavPath = item.path.replace(/\.[^/.]+$/, ".wav");
           zip.file(wavPath, item.blob);
         }
@@ -428,13 +437,10 @@ document.addEventListener('DOMContentLoaded', () => {
     downloadZipBtn.disabled = false;
   });
 
-  // =========================================================================
-  //  CORE: PROCESAMIENTO Y DECODIFICACIÓN DE AUDIO
-  // =========================================================================
+  // Decodificación y Resampleo
   async function convertAudioFile(file, mode) {
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     
-    // 1. Leer como ArrayBuffer
     const arrayBuffer = await new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => resolve(reader.result);
@@ -442,10 +448,8 @@ document.addEventListener('DOMContentLoaded', () => {
       reader.readAsArrayBuffer(file);
     });
 
-    // 2. Decodificar el Audio de origen
     const sourceAudioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
     
-    // 3. Configurar OfflineAudioContext para resamplear a 44100Hz
     const targetChannels = mode === 'mono' ? 1 : 2;
     const targetSampleRate = 44100;
     const totalFrames = targetSampleRate * sourceAudioBuffer.duration;
@@ -457,25 +461,19 @@ document.addEventListener('DOMContentLoaded', () => {
     bufferSource.connect(offlineCtx.destination);
     bufferSource.start(0);
     
-    // Renderizar audio resampleado
     const renderedBuffer = await offlineCtx.startRendering();
-    
-    // 4. Codificar a WAV PCM de 16 bits
     const wavBlob = encodeWAV16Bit(renderedBuffer, targetChannels);
-    
-    // Cerrar contexto principal
     await audioCtx.close();
     
     return wavBlob;
   }
 
-  // Codificador de WAV a 16-bit PCM
+  // Generador de WAV 16-bit PCM
   function encodeWAV16Bit(audioBuffer, channelCount) {
     const sampleRate = audioBuffer.sampleRate;
-    const length = audioBuffer.length * channelCount * 2 + 44; // 44 bytes para el header
+    const length = audioBuffer.length * channelCount * 2 + 44;
     const buffer = new ArrayBuffer(length);
     const view = new DataView(buffer);
-    
     let offset = 0;
 
     const setUint32 = (data) => {
@@ -488,44 +486,39 @@ document.addEventListener('DOMContentLoaded', () => {
       offset += 2;
     };
 
-    // --- RIFF Header ---
+    // RIFF header
     setUint32(0x46464952); // "RIFF"
-    setUint32(length - 8); // tamaño del archivo - 8
+    setUint32(length - 8);
     setUint32(0x45564157); // "WAVE"
 
-    // --- fmt Chunk ---
+    // fmt chunk
     setUint32(0x20746d66); // "fmt "
-    setUint32(16);         // tamaño del chunk fmt (16 bytes para PCM)
-    setUint16(1);          // Formato: 1 = PCM Lineal (sin compresión)
+    setUint32(16);
+    setUint16(1);          // PCM
     setUint16(channelCount);
     setUint32(sampleRate);
-    setUint32(sampleRate * channelCount * 2); // Byte Rate = sampleRate * canales * bytesPorMuestra (2)
-    setUint16(channelCount * 2);              // Block Align = canales * bytesPorMuestra
-    setUint16(16);                            // Bits per sample = 16 bits
+    setUint32(sampleRate * channelCount * 2);
+    setUint16(channelCount * 2);
+    setUint16(16);
 
-    // --- data Chunk ---
+    // data chunk
     setUint32(0x61746164); // "data"
-    setUint32(audioBuffer.length * channelCount * 2); // tamaño del bloque de datos
+    setUint32(audioBuffer.length * channelCount * 2);
 
-    // Mezclar canales si es necesario o copiar los canales al buffer de salida
     const channelBuffers = [];
     for (let i = 0; i < audioBuffer.numberOfChannels; i++) {
       channelBuffers.push(audioBuffer.getChannelData(i));
     }
 
-    // Codificación PCM de las muestras flotantes a enteros de 16-bit
     const totalSamples = audioBuffer.length;
     for (let pos = 0; pos < totalSamples; pos++) {
       for (let ch = 0; ch < channelCount; ch++) {
-        // Si el buffer origen tiene menos canales que el destino (ej. pasar de mono a estéreo)
         const channelData = channelBuffers[ch] || channelBuffers[0];
         let sample = channelData[pos];
         
-        // Limitar amplitud para evitar recortes (clipping)
         if (sample > 1) sample = 1;
         else if (sample < -1) sample = -1;
         
-        // Convertir Float32 (-1.0 a 1.0) a Int16 (-32768 a 32767)
         const pcmSample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
         view.setInt16(offset, pcmSample, true);
         offset += 2;

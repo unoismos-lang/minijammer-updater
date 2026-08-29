@@ -90,6 +90,22 @@ document.addEventListener('DOMContentLoaded', () => {
   let conversionQueue = []; // { file, path, status, blob, rowElement }
   let isConverting = false;
 
+  // Evitar que el navegador abra los archivos si se arrastran fuera de la zona
+  window.addEventListener('dragover', (e) => {
+    e.preventDefault();
+  }, false);
+  window.addEventListener('drop', (e) => {
+    e.preventDefault();
+  }, false);
+
+  // Zona de Drop clickeable
+  dropZone.addEventListener('click', (e) => {
+    // Solo disparar si no se hizo clic en los botones internos
+    if (e.target !== selectFilesBtn && e.target !== selectFolderBtn) {
+      fileInput.click();
+    }
+  });
+
   // Botones de Búsqueda
   selectFilesBtn.addEventListener('click', (e) => {
     e.stopPropagation();

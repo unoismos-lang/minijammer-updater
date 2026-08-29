@@ -801,6 +801,47 @@ code {
   font-family: 'JetBrains Mono', monospace;
 }
 
+.slicer-pad.warning {
+  border-color: rgba(255, 145, 0, 0.6) !important;
+  background: rgba(255, 145, 0, 0.08) !important;
+}
+
+.slicer-pad-warning-badge {
+  font-size: 0.58rem;
+  color: #ff9100;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  background: rgba(255, 145, 0, 0.15);
+  padding: 1px 4px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 145, 0, 0.3);
+  text-align: center;
+  max-width: 100%;
+}
+
+.slicer-pad-q-badge {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1px 4px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.slicer-pad-q-select {
+  background: #121621;
+  color: #ffd600;
+  font-size: 0.62rem;
+  font-family: 'JetBrains Mono', monospace;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  padding: 1px 2px;
+  outline: none;
+  cursor: pointer;
+  max-width: 100%;
+}
+
 @media (max-width: 640px) {
   .tabs-nav {
     grid-template-columns: 1fr;

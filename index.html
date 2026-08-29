@@ -10,7 +10,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4.0">
+  <link rel="stylesheet" href="styles.css?v=5.0">
 
   <!-- JSZip para empaquetado de carpetas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -336,6 +336,17 @@
                   <input type="range" id="slicer-sensitivity" min="1" max="100" value="50" style="accent-color: #ffd600; cursor: pointer; width: 90px;">
                   <span id="slicer-sensitivity-val" style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">50%</span>
                 </div>
+
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <label for="slicer-quality-global" style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);">Calidad / RAM:</label>
+                  <select id="slicer-quality-global" style="background: #121621; color: #ffd600; font-weight: 600; border: 1px solid var(--bg-card-border); padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; outline: none; cursor: pointer;">
+                    <option value="22k16" selected>🔥 Estándar (22.05kHz / 16b) — Máx 10.0s/pad</option>
+                    <option value="44k16">⚡ Hi-Fi (44.1kHz / 16b) — Máx 5.0s/pad</option>
+                    <option value="22k8">📻 Lo-Fi (22.05kHz / 8b) — Máx 20.0s/pad</option>
+                    <option value="11k8">📼 Vintage (11.025kHz / 8b) — Máx 40.0s/pad</option>
+                    <option value="custom">🛠️ Configurar por Pad Individual</option>
+                  </select>
+                </div>
               </div>
 
               <div style="display: flex; gap: 8px;">
@@ -359,9 +370,9 @@
 
             <!-- Matriz de 16 Pads (4x4) Interactiva -->
             <div style="margin-bottom: 20px;">
-              <div style="font-size: 0.85rem; font-weight: 700; color: #fff; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+              <div style="font-size: 0.85rem; font-weight: 700; color: #fff; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
                 <span>🎹 Matriz de 16 Pads (Preescucha & Teclado)</span>
-                <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: normal;">Atajos: 1-4, Q-R, A-F, Z-V</span>
+                <span id="slicer-pads-status" style="font-size: 0.75rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">16 Pads Listos</span>
               </div>
 
               <div id="slicer-pads-grid" class="slicer-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
@@ -370,36 +381,43 @@
             </div>
 
             <!-- Panel de Exportación -->
-            <div style="padding: 16px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
-              <div style="display: flex; align-items: center; gap: 10px;">
-                <label for="export-jam-bank" style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);">Banco Destino:</label>
-                <select id="export-jam-bank" style="background: #121621; color: var(--cyan); font-weight: 700; font-family: 'JetBrains Mono', monospace; border: 1px solid var(--bg-card-border); padding: 6px 12px; border-radius: 8px; outline: none; cursor: pointer;">
-                  <option value="0">JAM_00</option>
-                  <option value="1" selected>JAM_01</option>
-                  <option value="2">JAM_02</option>
-                  <option value="3">JAM_03</option>
-                  <option value="4">JAM_04</option>
-                  <option value="5">JAM_05</option>
-                  <option value="6">JAM_06</option>
-                  <option value="7">JAM_07</option>
-                  <option value="8">JAM_08</option>
-                  <option value="9">JAM_09</option>
-                  <option value="10">JAM_10</option>
-                  <option value="11">JAM_11</option>
-                  <option value="12">JAM_12</option>
-                  <option value="13">JAM_13</option>
-                  <option value="14">JAM_14</option>
-                  <option value="15">JAM_15</option>
-                </select>
+            <div style="padding: 16px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 12px; display: flex; flex-direction: column; gap: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <label for="export-jam-bank" style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);">Banco Destino:</label>
+                  <select id="export-jam-bank" style="background: #121621; color: var(--cyan); font-weight: 700; font-family: 'JetBrains Mono', monospace; border: 1px solid var(--bg-card-border); padding: 6px 12px; border-radius: 8px; outline: none; cursor: pointer;">
+                    <option value="0">JAM_00</option>
+                    <option value="1" selected>JAM_01</option>
+                    <option value="2">JAM_02</option>
+                    <option value="3">JAM_03</option>
+                    <option value="4">JAM_04</option>
+                    <option value="5">JAM_05</option>
+                    <option value="6">JAM_06</option>
+                    <option value="7">JAM_07</option>
+                    <option value="8">JAM_08</option>
+                    <option value="9">JAM_09</option>
+                    <option value="10">JAM_10</option>
+                    <option value="11">JAM_11</option>
+                    <option value="12">JAM_12</option>
+                    <option value="13">JAM_13</option>
+                    <option value="14">JAM_14</option>
+                    <option value="15">JAM_15</option>
+                  </select>
+                </div>
+
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                  <button id="export-wavs-btn" class="btn btn-primary glow-cyan-dim" style="padding: 8px 14px; font-size: 0.85rem; min-height: auto; min-width: auto; margin-top: 0;">
+                    📦 Descargar 16 WAVs (.ZIP)
+                  </button>
+                  <button id="export-jam-btn" class="btn btn-primary glow-orange" style="padding: 8px 16px; font-size: 0.85rem; min-height: auto; min-width: auto; margin-top: 0;">
+                    ⚡ Exportar Proyecto MiniJammer (/JAM_XX/)
+                  </button>
+                </div>
               </div>
 
-              <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <button id="export-wavs-btn" class="btn btn-primary glow-cyan-dim" style="padding: 8px 14px; font-size: 0.85rem; min-height: auto; min-width: auto; margin-top: 0;">
-                  📦 Descargar 16 WAVs (.ZIP)
-                </button>
-                <button id="export-jam-btn" class="btn btn-primary glow-orange" style="padding: 8px 16px; font-size: 0.85rem; min-height: auto; min-width: auto; margin-top: 0;">
-                  ⚡ Exportar Proyecto MiniJammer (/JAM_XX/)
-                </button>
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text-muted); padding-top: 4px; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+                <input type="checkbox" id="export-autoadjust-quality" checked style="accent-color: #ffd600; cursor: pointer;">
+                <label for="export-autoadjust-quality" style="cursor: pointer;">Auto-adaptar calidad si algún chop excede su límite de tiempo para que quepa completo sin recortar</label>
               </div>
             </div>
 
@@ -609,7 +627,7 @@
     </div>
   </div>
 
-  <script src="app.js?v=4.0"></script>
+  <script src="app.js?v=5.0"></script>
 </body>
 
 </html>

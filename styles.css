@@ -173,8 +173,8 @@ body {
 /* Tabs Navigation */
 .tabs-nav {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr auto;
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
   margin-bottom: 24px;
 }
 
@@ -745,6 +745,60 @@ code {
   border-color: var(--orange);
   color: #fff;
   box-shadow: 0 0 15px rgba(255, 145, 0, 0.15);
+}
+
+/* Estilos para el Auto-Slicer */
+.slicer-pad {
+  background: rgba(18, 22, 33, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 10px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.slicer-pad:hover {
+  background: rgba(28, 36, 56, 0.95);
+  border-color: rgba(255, 61, 113, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 61, 113, 0.15);
+}
+
+.slicer-pad.playing {
+  background: rgba(255, 61, 113, 0.3) !important;
+  border-color: #ff3d71 !important;
+  box-shadow: 0 0 20px rgba(255, 61, 113, 0.6) !important;
+  transform: scale(0.96);
+}
+
+.slicer-pad-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 900;
+  font-size: 0.9rem;
+  color: #fff;
+}
+
+.slicer-pad-key {
+  font-size: 0.65rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.06);
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+.slicer-pad-len {
+  font-size: 0.65rem;
+  color: var(--cyan);
+  font-family: 'JetBrains Mono', monospace;
 }
 
 @media (max-width: 640px) {

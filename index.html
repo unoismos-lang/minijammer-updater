@@ -74,8 +74,15 @@
           <span class="tab-sub">Preparar archivos WAV</span>
         </span>
       </button>
-      <button class="tab-btn" data-tab="tab-guia">
+      <button class="tab-btn" data-tab="tab-slicer">
         <span class="tab-num">4</span>
+        <span class="tab-info">
+          <span class="tab-title">Auto-Slicer</span>
+          <span class="tab-sub">Chop Studio & Pads</span>
+        </span>
+      </button>
+      <button class="tab-btn" data-tab="tab-guia">
+        <span class="tab-num">5</span>
         <span class="tab-info">
           <span class="tab-title">Guía y Ayuda</span>
           <span class="tab-sub">Solución de problemas</span>
@@ -287,7 +294,119 @@
         </div>
       </section>
 
-      <!-- ================= PESTAÑA 4: GUÍA & AYUDA ================= -->
+      <!-- ================= PESTAÑA 4: AUTO-SLICER & CHOP STUDIO ================= -->
+      <section id="tab-slicer" class="tab-panel">
+        <div class="card glass-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="chip" style="background: rgba(255, 61, 113, 0.15); color: #ff3d71; border: 1px solid rgba(255, 61, 113, 0.3);">CHOP STUDIO</span>
+              <h2>Auto-Slicer & Sample Chopper</h2>
+            </div>
+            <span style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">16 Pads / Chops Inteligentes</span>
+          </div>
+
+          <p class="card-desc" style="margin-bottom: 20px;">
+            Carga un loop o canción, detecta transitorios o divide en 16 partes iguales, ajusta los puntos de inicio/fin en la onda interactiva y exporta un proyecto listo para tu MiniJammer XXL.
+          </p>
+
+          <!-- Dropzone de Audio para Slicer -->
+          <div id="slicer-drop-zone" class="drop-zone" style="border: 2px dashed rgba(255, 61, 113, 0.35); border-radius: 12px; padding: 32px 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; background: rgba(255, 61, 113, 0.02); display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px;">
+            <div style="font-size: 2.8rem; filter: drop-shadow(0 0 10px rgba(255, 61, 113, 0.4));">✂️</div>
+            <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-main);">Arrastra aquí un audio para cortar (MP3, FLAC, WAV, M4A)</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">o haz clic para buscar en tus archivos</div>
+            <label for="slicer-file-input" class="btn btn-primary" style="padding: 8px 18px; font-size: 0.85rem; margin-top: 6px; min-height: auto; min-width: auto; background: rgba(255, 61, 113, 0.15); border-color: rgba(255, 61, 113, 0.3); color: #ff3d71; cursor: pointer; display: inline-flex; align-items: center;">Seleccionar Archivo de Audio</label>
+            <input type="file" id="slicer-file-input" accept="audio/*" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;">
+          </div>
+
+          <!-- Contenedor del Editor de Slices -->
+          <div id="slicer-editor" class="hidden">
+            <!-- Barra de Controles de Corte -->
+            <div class="slicer-toolbar" style="display: flex; gap: 14px; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: 16px; padding: 14px 18px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 12px;">
+              <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);">Modo:</label>
+                <select id="slicer-mode" style="background: #121621; color: var(--text-main); border: 1px solid var(--bg-card-border); padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; outline: none; cursor: pointer;">
+                  <option value="transients" selected>⚡ Auto-Detección de Picos (Transitorios)</option>
+                  <option value="grid16">📏 División Equal (16 Rebanadas)</option>
+                  <option value="grid8">📏 División Equal (8 Rebanadas)</option>
+                  <option value="grid4">📏 División Equal (4 Rebanadas)</option>
+                </select>
+
+                <div id="sensitivity-container" style="display: flex; align-items: center; gap: 8px;">
+                  <label for="slicer-sensitivity" style="font-size: 0.85rem; color: var(--text-muted);">Sensibilidad:</label>
+                  <input type="range" id="slicer-sensitivity" min="1" max="100" value="50" style="accent-color: #ff3d71; cursor: pointer; width: 90px;">
+                  <span id="slicer-sensitivity-val" style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">50%</span>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 8px;">
+                <button id="slicer-rechop-btn" class="btn btn-primary glow-cyan-dim" style="padding: 6px 12px; font-size: 0.8rem; min-height: auto; min-width: auto; margin-top: 0;">🔄 Re-calcular Cortes</button>
+              </div>
+            </div>
+
+            <!-- Canvas de Forma de Onda -->
+            <div style="position: relative; width: 100%; height: 160px; background: rgba(10, 13, 20, 0.95); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; overflow: hidden; margin-bottom: 18px; box-shadow: inset 0 0 20px rgba(0,0,0,0.6);">
+              <canvas id="waveform-canvas" style="width: 100%; height: 100%; display: block; cursor: crosshair;"></canvas>
+              <div id="waveform-loading" class="hidden" style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(9,11,16,0.85); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--cyan); font-size: 0.9rem;">
+                Analizando forma de onda...
+              </div>
+            </div>
+            
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: -10px; margin-bottom: 16px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+              <span>💡 <em>Haz clic en la onda o en los pads para preescuchar. Arrastra las líneas de corte para ajustar.</em></span>
+              <span id="slicer-audio-info" style="font-family: 'JetBrains Mono', monospace;">0.0s | 44.1kHz</span>
+            </div>
+
+            <!-- Matriz de 16 Pads (4x4) Interactiva -->
+            <div style="margin-bottom: 20px;">
+              <div style="font-size: 0.85rem; font-weight: 700; color: #fff; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                <span>🎹 Matriz de 16 Pads (Preescucha & Teclado)</span>
+                <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: normal;">Atajos: 1-4, Q-R, A-F, Z-V</span>
+              </div>
+
+              <div id="slicer-pads-grid" class="slicer-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+                <!-- 16 pads generados dinámicamente -->
+              </div>
+            </div>
+
+            <!-- Panel de Exportación -->
+            <div style="padding: 16px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <label for="export-jam-bank" style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);">Banco Destino:</label>
+                <select id="export-jam-bank" style="background: #121621; color: var(--cyan); font-weight: 700; font-family: 'JetBrains Mono', monospace; border: 1px solid var(--bg-card-border); padding: 6px 12px; border-radius: 8px; outline: none; cursor: pointer;">
+                  <option value="0">JAM_00</option>
+                  <option value="1" selected>JAM_01</option>
+                  <option value="2">JAM_02</option>
+                  <option value="3">JAM_03</option>
+                  <option value="4">JAM_04</option>
+                  <option value="5">JAM_05</option>
+                  <option value="6">JAM_06</option>
+                  <option value="7">JAM_07</option>
+                  <option value="8">JAM_08</option>
+                  <option value="9">JAM_09</option>
+                  <option value="10">JAM_10</option>
+                  <option value="11">JAM_11</option>
+                  <option value="12">JAM_12</option>
+                  <option value="13">JAM_13</option>
+                  <option value="14">JAM_14</option>
+                  <option value="15">JAM_15</option>
+                </select>
+              </div>
+
+              <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button id="export-wavs-btn" class="btn btn-primary glow-cyan-dim" style="padding: 8px 14px; font-size: 0.85rem; min-height: auto; min-width: auto; margin-top: 0;">
+                  📦 Descargar 16 WAVs (.ZIP)
+                </button>
+                <button id="export-jam-btn" class="btn btn-primary glow-orange" style="padding: 8px 16px; font-size: 0.85rem; min-height: auto; min-width: auto; margin-top: 0;">
+                  ⚡ Exportar Proyecto MiniJammer (/JAM_XX/)
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PESTAÑA 5: GUÍA & AYUDA ================= -->
       <section id="tab-guia" class="tab-panel">
         <div class="card glass-card">
           <h2>Preguntas Frecuentes y Solución de Problemas</h2>

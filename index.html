@@ -10,7 +10,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=7.0">
+  <link rel="stylesheet" href="styles.css?v=9.0">
 
   <!-- JSZip para empaquetado de carpetas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -103,12 +103,12 @@
             </div>
             <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
               <div style="display: flex; align-items: center; gap: 8px;">
-                <span class="version-tag">v1.1</span>
+                <span class="version-tag">v1.2</span>
                 <button class="history-icon-btn glow-cyan-dim" data-changelog="modal-historial-maestro" title="Historial de versiones">
                   🕒
                 </button>
               </div>
-              <span style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">Actualizado: 26/08/2026 - 14:46</span>
+              <span style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">Actualizado: 02/09/2026</span>
               <button class="changelog-btn glow-cyan-dim" data-changelog="modal-maestro">
                 📋 Novedades
               </button>
@@ -253,7 +253,7 @@
 
             <div class="option-group" style="display: flex; flex-direction: column; justify-content: center; gap: 6px; flex: 1; min-width: 260px;">
               <label style="font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
-                <span>🛡️ Compatibilidad MicroSD / ESP32:</span>
+                <span>🛡️ Compatibilidad MicroSD / Placa Maestra:</span>
               </label>
               <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-muted); cursor: pointer; margin-top: 4px;">
                 <input type="checkbox" id="conv-sanitize" checked style="accent-color: var(--cyan); width: 16px; height: 16px; cursor: pointer;">
@@ -519,45 +519,80 @@
   <div id="modal-maestro" class="modal-overlay">
     <div class="modal-content glass-card">
       <div class="modal-header">
-        <h2>Cambios en Placa Maestra v1.1</h2>
+        <h2>Cambios en Placa Maestra v1.2</h2>
         <button class="modal-close">&times;</button>
       </div>
       <div class="modal-body">
         <div class="changelog-section">
-          <h3>🎵 Parches de Audio & Resampling Lo-Fi</h3>
+          <h3>✂️ Modo Mini-Reproductor & Extractor de Chops en Vivo</h3>
           <ul>
-            <li><strong>Alineación Automática:</strong> El motor de reproducción de samples estéreo y mono ahora detecta y se alinea automáticamente con la tasa de muestreo nativa del Sampler (22050 Hz en modo Lo-Fi, 44100 Hz en Hi-Fi).</li>
-            <li><strong>Corrección de Pitch:</strong> Se evita la aceleración no deseada al hacer preescuchas de samples grabados en calidad reducida.</li>
+            <li><strong>Streaming y Chop en Pad:</strong> Permite asignar y reproducir archivos WAV directamente desde la MicroSD hacia un pad en tiempo real manteniendo el pad presionado antes de seleccionar tu archivo en el explorador.</li>
+            <li><strong>Ajuste de Marcadores con Aceleración:</strong>
+              <br>• <code>SHIFT</code> + girar <strong>Encoder 1</strong>: Ajusta el punto de inicio (<strong>Start</strong> / verde) con aceleración dinámica para recorrer canciones largas rápidamente.
+              <br>• <code>SHIFT</code> + girar <strong>Encoder 2</strong>: Ajusta el punto final (<strong>End</strong> / rojo) con aceleración dinámica.
+            </li>
+            <li><strong>Extracción Instantánea a Memoria:</strong> Presionando <strong>REC</strong> se extrae el fragmento seleccionado directamente a la memoria del pad, aplicando reducción automática de ganancia (-12 dB) para evitar saturación y ajustándose a la calidad de grabación activa (<code>"FRAGMENTO EXTRAIDO"</code>).</li>
+            <li><strong>Chop Reset:</strong> Mantener presionado el pad durante <strong>3 segundos</strong> restaura los marcadores al inicio y final completos de la pista.</li>
           </ul>
         </div>
         <div class="changelog-section">
-          <h3>📂 Novedades en Explorador de Archivos (Preescucha)</h3>
+          <h3>🔴 Grabadora de Sesión (Directa a MicroSD)</h3>
           <ul>
-            <li><strong>Botones de Preescucha:</strong> Reproduce audios directamente en la lista del explorador de la pantalla LCD usando el botón físico <strong>PLAY (func[2])</strong> y deténlos con <strong>STOP (func[3])</strong>.</li>
-            <li><strong>Retención de Cursor:</strong> Al eliminar un archivo del explorador, el cursor del menú ya no salta al primer elemento del directorio; ahora se mantiene en la misma posición (apuntando al archivo posterior o anterior si era el último).</li>
+            <li><strong>Grabadora de Sesión:</strong> Graba la mezcla estéreo completa en tiempo real directamente en la tarjeta MicroSD mediante <code>SHIFT + REC</code>.</li>
+            <li><strong>Sin Límite de RAM:</strong> La duración máxima ya no depende de la memoria interna, sino únicamente del espacio libre disponible en tu tarjeta MicroSD (mostrado en pantalla en horas/minutos).</li>
+            <li><strong>Guardado Automático:</strong> Un segundo toque de <code>SHIFT + REC</code> finaliza y guarda el archivo con numeración consecutiva (<code>/SESSION_001.WAV</code>).</li>
           </ul>
         </div>
         <div class="changelog-section">
-          <h3>🌈 Ajustes de Iluminación LED RGB</h3>
+          <h3>🎹 Modo Cromático con Secuenciador Propio</h3>
           <ul>
-            <li><strong>Menú LED Expandido:</strong> Se expandió el menú de ajustes de colores RGB de los LEDs en pantalla a 11 parámetros editables en total con scroll suave.</li>
-            <li><strong>Paso Calibrado:</strong> Se ajustó el incremento al girar el encoder a un paso constante de <code>+/- 2</code> por clic para una selección precisa de tonos.</li>
-            <li><strong>Controles del Menú LED:</strong>
-              <br>• <strong>Abrir / Guardar y Salir:</strong> Mantener presionado <code>SHIFT</code> + Doble Clic en el <strong>Joystick</strong>.
-              <br>• <strong>Seleccionar Parámetro:</strong> Girar <strong>Encoder 1</strong> para moverse por la lista.
-              <br>• <strong>Ajustar Color / Valor:</strong> Girar <strong>Encoder 2</strong> (paso constante de <code>+/- 2</code>).
+            <li><strong>Instrumento Melódico de 16 Notas:</strong> Mantén un pad presionado + pulsa <code>SHIFT</code> (<code>CROMATICO?</code>) y confirma con un segundo toque de <code>SHIFT</code> para clonar el sample a lo largo de los 16 pads afinados por semitonos.</li>
+            <li><strong>Secuenciador 100% Independiente:</strong> Cuenta con su propia memoria de pasos, permitiendo secuenciar melodías y líneas de bajo cromáticas sin alterar la secuencia de ritmos o samples de tus otros pads.</li>
+            <li><strong>Transposición de Octavas en Vivo:</strong> Girando <strong>Encoder 2</strong> se sube o baja de octava instantáneamente (<code>C-2</code> a <code>C7</code>), recalculando el pitch de todas las notas en tiempo real.</li>
+            <li><strong>Guardado en Banco:</strong> Se almacena y recupera automáticamente en el archivo <code>CHROMATIC.JAM</code> de cada proyecto.</li>
+          </ul>
+        </div>
+        <div class="changelog-section">
+          <h3>🎚️ Motor de 6 Calidades de Grabación</h3>
+          <ul>
+            <li><strong>Selector QUAL en Cabecera:</strong> Se amplió el selector de calidades en la barra de estado superior (<code>QUAL</code>) de 2 a 6 opciones según necesidad de tiempo y carácter:
+              <br>• <strong>HIFI</strong> (44.1 kHz / 16-bit) — Máx 5 segundos.
+              <br>• <strong>LOFI</strong> (22.05 kHz / 16-bit) — Máx 10 segundos.
+              <br>• <strong>12-EMU</strong> (22.05 kHz / 12-bit) — Máx 10 segundos (textura crujiente con máscara <code>0xFFF0</code>).
+              <br>• <strong>CRUNCH</strong> (22.05 kHz / 8-bit) — Máx 20 segundos (duplica el búfer a 441,000 muestras).
+              <br>• <strong>VINTAGE</strong> (11.025 kHz / 12-bit) — Máx 20 segundos (sonido cálido y retro).
+              <br>• <strong>EXTREMO</strong> (11.025 kHz / 8-bit) — Máx 40 segundos por pad.
             </li>
           </ul>
         </div>
         <div class="changelog-section">
-          <h3>🎹 Modulación de Efectos en Encoder 3</h3>
+          <h3>🎙️ Nuevas Fuentes de Entrada y Ruteo Híbrido</h3>
           <ul>
-            <li><strong>4 Fuentes de Modulación:</strong> Se añadieron 4 modos interactivos al <strong>Encoder 3</strong> para mapear y modular cualquier parámetro de efectos (Filtro, Reverb, Delay, Distorsión, etc.) en la matriz de modulación:
-              <br>• <code>ENC 3</code>: Girar <strong>Encoder 3</strong> de forma normal.
-              <br>• <code>ENC 3 CLK</code>: Girar <strong>Encoder 3</strong> mientras se mantiene presionado (Click + Giro).
-              <br>• <code>ENC 3 SH</code>: Girar <strong>Encoder 3</strong> manteniendo presionado el botón <code>SHIFT</code>.
-              <br>• <code>ENC 3 SH+CLK</code>: Girar <strong>Encoder 3</strong> manteniendo presionado <code>SHIFT</code> y haciendo Click simultáneamente.
+            <li><strong>5 Modos de Entrada:</strong> Mantener presionado <code>SHIFT</code> + Clic Largo en <strong>Encoder 1</strong> (> 600 ms) cicla entre:
+              <br>• <code>MIC</code>: Micrófono interno.
+              <br>• <code>LINE</code>: Entrada de línea auxiliar Jack 3.5mm.
+              <br>• <code>RESAMPLING</code>: Remuestreo digital interno de la mezcla master.
+              <br>• <code>RESA + MIC</code>: Mezcla híbrida en vivo (Master interno + Micrófono).
+              <br>• <code>RESA + LINE</code>: Mezcla híbrida en vivo (Master interno + Entrada de línea externa).
             </li>
+            <li><strong>Monitor de Audio:</strong> <code>SHIFT</code> + Clic Corto en <strong>Encoder 1</strong> activa o desactiva la monitorización directa (<code>MONITOR: ON / OFF</code>).</li>
+          </ul>
+        </div>
+        <div class="changelog-section">
+          <h3>📂 Mejoras del Sistema & MicroSD</h3>
+          <ul>
+            <li><strong>Soporte de Carpetas Largas:</strong> Búfer de nombres ampliado de 31 a <strong>63 caracteres</strong> y rutas completas a <strong>256 bytes</strong>, evitando carpetas "vacías" o bloqueos al leer álbumes y nombres extensos.</li>
+            <li><strong>Calibración Visual de Onda:</strong> Multiplicador ajustado a <code>x5</code> para representar fielmente la dinámica y silueta real de la onda en pantalla sin saturarse en bloque sólido.</li>
+            <li><strong>Multitasking Cooperativo:</strong> Pausas de procesamiento al escanear la MicroSD para mantener la pantalla y los controles 100% fluidos.</li>
+          </ul>
+        </div>
+        <div class="changelog-section">
+          <h3>✂️ Auto-Slicer & Chop Studio (Plataforma Web)</h3>
+          <ul>
+            <li><strong>Chop Studio Interactivo:</strong> Detección de transitorios y división en 16, 8 o 4 rebanadas con preescucha interactiva en matriz 4x4, atajos de teclado y botón STOP inmediato.</li>
+            <li><strong>Alineación de Calidades:</strong> Selectores con las 6 calidades exactas de la Placa Maestra y truncamiento seguro al límite de RAM respetando el inicio del corte.</li>
+            <li><strong>Control de Headroom:</strong> Selector de ganancia (75% recomendado) para evitar saturación de mezcla al tocar varios pads.</li>
+            <li><strong>Exportación Directa:</strong> Descarga proyectos listos para MicroSD (<code>/JAM_XX/</code>) o chops completos sin recorte para DAWs externos.</li>
           </ul>
         </div>
       </div>
@@ -592,10 +627,30 @@
       </div>
       <div class="modal-body">
         
-        <!-- Versión 1.1 -->
+        <!-- Versión 1.2 -->
         <details class="faq-item" open style="border-color: rgba(0, 229, 255, 0.35); background: rgba(0, 229, 255, 0.03);">
           <summary style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
-            <span><strong style="color: var(--cyan);">v1.1</strong> — Preescucha, Lo-Fi & Modulación Encoder 3</span>
+            <span><strong style="color: var(--cyan);">v1.2</strong> — Mini-Reproductor & Chop, Grabadora Sesión SD, Modo Cromático & 6 Calidades</span>
+            <span style="font-size: 0.75rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">02/09/2026</span>
+          </summary>
+          <div class="changelog-section" style="margin-top: 14px;">
+            <ul>
+              <li><strong>Mini-Reproductor & Chop en Vivo:</strong> Streaming directo de audio desde MicroSD hacia pads, ajuste de corte con <code>ENC 1</code> / <code>ENC 2</code> y extracción a RAM con <code>REC</code>.</li>
+              <li><strong>Grabadora de Sesión SD:</strong> Grabación master estéreo directa a tarjeta MicroSD con <code>SHIFT + REC</code> sin límite de RAM.</li>
+              <li><strong>Modo Cromático:</strong> Mapeo melódico de 16 notas por semitonos, cambio de octavas con <code>ENC 2</code> y secuenciador independiente persistido en <code>CHROMATIC.JAM</code>.</li>
+              <li><strong>6 Calidades de Grabación:</strong> Incorporación de <code>12-EMU</code>, <code>CRUNCH</code>, <code>VINTAGE</code> y <code>EXTREMO</code> (hasta 40s por pad) junto a <code>HIFI</code> y <code>LOFI</code>.</li>
+              <li><strong>5 Fuentes de Audio:</strong> Selector en <code>ENC 1</code> con modos <code>MIC</code>, <code>LINE</code>, <code>RESAMPLING</code> y mezclas híbridas en vivo (<code>RESA+MIC</code>, <code>RESA+LINE</code>).</li>
+              <li><strong>Compatibilidad MicroSD:</strong> Soporte de carpetas largas de hasta 63 caracteres y rutas de 256 bytes para evitar carpetas vacías.</li>
+              <li><strong>Calibración Visual:</strong> Escala visual de onda ajustada a <code>x5</code> para mayor fidelidad y rango dinámico.</li>
+              <li><strong>Auto-Slicer Web:</strong> Chop Studio en navegador con detección de transitorios, matriz 4x4, selector de ganancia y exportación directa a MicroSD o DAWs.</li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Versión 1.1 -->
+        <details class="faq-item" style="margin-top: 8px;">
+          <summary style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+            <span><strong style="color: #fff;">v1.1</strong> — Preescucha, Lo-Fi & Modulación Encoder 3</span>
             <span style="font-size: 0.75rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">26/08/2026</span>
           </summary>
           <div class="changelog-section" style="margin-top: 14px;">
@@ -657,7 +712,7 @@
     </div>
   </div>
 
-  <script src="app.js?v=7.0"></script>
+  <script src="app.js?v=9.0"></script>
 </body>
 
 </html>

@@ -1,6 +1,6 @@
 :root {
   --bg-dark: #090b10;
-  --bg-card: rgba(18, 22, 33, 0.75);
+  --bg-card: rgba(18, 22, 33, 0.6);
   --bg-card-border: rgba(255, 255, 255, 0.08);
   --text-main: #f0f4fc;
   --text-muted: #8a99b5;
@@ -180,6 +180,8 @@ body {
 
 .tab-btn {
   background: rgba(18, 22, 33, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--bg-card-border);
   border-radius: 14px;
   padding: 14px 18px;
@@ -193,13 +195,13 @@ body {
 }
 
 .tab-btn:hover {
-  background: rgba(28, 34, 50, 0.8);
+  background: rgba(28, 34, 50, 0.75);
   border-color: rgba(255, 255, 255, 0.15);
   color: var(--text-main);
 }
 
 .tab-btn.active {
-  background: rgba(28, 36, 56, 0.95);
+  background: rgba(28, 36, 56, 0.85);
   border-color: var(--cyan);
   box-shadow: 0 0 25px rgba(0, 229, 255, 0.15);
   color: #fff;
@@ -241,11 +243,25 @@ body {
 /* Glass Card */
 .glass-card {
   background: var(--bg-card);
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--bg-card-border);
   border-radius: var(--radius);
   padding: 32px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Selector dropdowns aligned with tab buttons */
+select {
+  background: rgba(18, 22, 33, 0.6) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--bg-card-border);
+}
+
+select option {
+  background: #121621;
+  color: var(--text-main);
 }
 
 .tab-panel {

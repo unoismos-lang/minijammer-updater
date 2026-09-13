@@ -7,10 +7,11 @@
   <title>MiniJammer XXL — Firmware Web Flasher</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.cdnfonts.com/css/helvetica-neue-55" rel="stylesheet">
   <link
-    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=11.0">
+  <link rel="stylesheet" href="styles.css?v=12.0">
 
   <!-- JSZip para empaquetado de carpetas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -245,7 +246,7 @@
               <label style="font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
                 <span>🎯 Formato de Salida:</span>
               </label>
-              <select id="conv-mode" style="background: rgba(18, 22, 33, 0.42); color: var(--text-main); border: 1px solid var(--bg-card-border); padding: 10px; border-radius: 8px; font-family: 'Outfit', sans-serif; cursor: pointer; outline: none; width: 100%; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);">
+              <select id="conv-mode" style="background: rgba(18, 22, 33, 0.42); color: var(--text-main); border: 1px solid var(--bg-card-border); padding: 10px; border-radius: 8px; font-family: inherit; cursor: pointer; outline: none; width: 100%; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);">
                 <option value="mono" selected>Modo Sampler (16-bit Mono, 44.1kHz) - Optimizado para pads</option>
                 <option value="stereo">Modo MiniPlayer / Escucha (16-bit Estéreo, 44.1kHz)</option>
               </select>

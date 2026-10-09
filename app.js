@@ -37,12 +37,12 @@ document.addEventListener('DOMContentLoaded', () => {
         targetPanel.classList.add('active');
       }
 
-      // Mostrar el manual en todas excepto convertidor y slicer
+      // Mostrar el manual solo en la pestaña de ayuda
       if (manualSection) {
-        if (targetId === 'tab-converter' || targetId === 'tab-slicer') {
-          manualSection.style.display = 'none';
-        } else {
+        if (targetId === 'tab-guia') {
           manualSection.style.display = 'flex';
+        } else {
+          manualSection.style.display = 'none';
         }
       }
 
@@ -1514,6 +1514,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
 
 
 

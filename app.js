@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 2. Control de pestañas
   const tabBtns = document.querySelectorAll('.tab-btn');
   const tabPanels = document.querySelectorAll('.tab-panel');
+  const manualSection = document.getElementById('manual-section');
 
   tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -34,6 +35,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const targetPanel = document.getElementById(targetId);
       if (targetPanel) {
         targetPanel.classList.add('active');
+      }
+
+      // Mostrar el manual en todas excepto convertidor y slicer
+      if (manualSection) {
+        if (targetId === 'tab-converter' || targetId === 'tab-slicer') {
+          manualSection.style.display = 'none';
+        } else {
+          manualSection.style.display = 'flex';
+        }
       }
 
       // Detener cualquier audio en reproduccion al cambiar de pestaña
@@ -1504,6 +1514,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
 
 
 

@@ -96,12 +96,12 @@
             </div>
             <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
               <div style="display: flex; align-items: center; gap: 8px;">
-                <span class="version-tag">v1.2</span>
+                <span class="version-tag">v1.4</span>
                 <button class="history-icon-btn glow-cyan-dim" data-changelog="modal-historial-maestro" title="Historial de versiones">
                   🕒
                 </button>
               </div>
-              <span style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">Actualizado: 02/09/2026</span>
+              <span style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">Actualizado: 02/11/2026</span>
               <button class="changelog-btn glow-cyan-dim" data-changelog="modal-maestro">
                 📋 Novedades
               </button>
@@ -512,80 +512,39 @@
   <div id="modal-maestro" class="modal-overlay">
     <div class="modal-content glass-card">
       <div class="modal-header">
-        <h2>Cambios en Placa Maestra v1.2</h2>
+        <h2>Cambios en Placa Maestra v1.4</h2>
         <button class="modal-close">&times;</button>
       </div>
       <div class="modal-body">
         <div class="changelog-section">
-          <h3>✂️ Modo Mini-Reproductor & Extractor de Chops en Vivo</h3>
+          <h3>ðŸŽ›ï¸ ConmutaciÃ³n Directa de Motores (Sinte â†” Sampler)</h3>
           <ul>
-            <li><strong>Streaming y Chop en Pad:</strong> Permite asignar y reproducir archivos WAV directamente desde la MicroSD hacia un pad en tiempo real manteniendo el pad presionado antes de seleccionar tu archivo en el explorador.</li>
-            <li><strong>Ajuste de Marcadores con Aceleración:</strong>
-              <br>• <code>SHIFT</code> + girar <strong>Encoder 1</strong>: Ajusta el punto de inicio (<strong>Start</strong> / verde) con aceleración dinámica para recorrer canciones largas rápidamente.
-              <br>• <code>SHIFT</code> + girar <strong>Encoder 2</strong>: Ajusta el punto final (<strong>End</strong> / rojo) con aceleración dinámica.
-            </li>
-            <li><strong>Extracción Instantánea a Memoria:</strong> Presionando <strong>REC</strong> se extrae el fragmento seleccionado directamente a la memoria del pad, aplicando reducción automática de ganancia (-12 dB) para evitar saturación y ajustándose a la calidad de grabación activa (<code>"FRAGMENTO EXTRAIDO"</code>).</li>
-            <li><strong>Chop Reset:</strong> Mantener presionado el pad durante <strong>3 segundos</strong> restaura los marcadores al inicio y final completos de la pista.</li>
+            <li><strong>Cambio Inmediato sin Reseteo:</strong> Ahora puedes intercambiar de motor entre Sintetizador y Sampler en cualquier pista directamente desde la columna de motor del explorador o al cargar presets/muestras, sin necesidad de vaciar la pista previamente.</li>
+            <li><strong>Ruteo de Audio Seguro:</strong> EliminaciÃ³n de zonas muertas de silencio al cambiar de instrumento; las notas y pads suenan al instante sin tener que presionar <code>SHIFT</code>.</li>
+            <li><strong>Limpieza de Voces:</strong> Las voces del motor anterior se detienen de forma segura bajo exclusiÃ³n mutua para evitar cuelgues o ruidos residuales.</li>
           </ul>
         </div>
         <div class="changelog-section">
-          <h3>🔴 Grabadora de Sesión (Directa a MicroSD)</h3>
+          <h3>ðŸ“‹ SincronizaciÃ³n Total de Patrones & Escenas</h3>
           <ul>
-            <li><strong>Grabadora de Sesión:</strong> Graba la mezcla estéreo completa en tiempo real directamente en la tarjeta MicroSD mediante <code>SHIFT + REC</code>.</li>
-            <li><strong>Sin Límite de RAM:</strong> La duración máxima ya no depende de la memoria interna, sino únicamente del espacio libre disponible en tu tarjeta MicroSD (mostrado en pantalla en horas/minutos).</li>
-            <li><strong>Guardado Automático:</strong> Un segundo toque de <code>SHIFT + REC</code> finaliza y guarda el archivo con numeración consecutiva (<code>/SESSION_001.WAV</code>).</li>
+            <li><strong>GestiÃ³n de Escenas Consistente:</strong> NavegaciÃ³n y organizaciÃ³n precisa de patrones en todas las escenas; las tarjetas de patrÃ³n se muestran siempre disponibles.</li>
+            <li><strong>Borrado Completo en Memoria:</strong> El reseteo de pista con <code>PAD + REC</code> (Mixer) o <code>SHIFT + STOP</code> (Studio) borra integralmente las variaciones de la pista en el arreglo, garantizando que el instrumento no resucite al cambiar de escena.</li>
           </ul>
         </div>
         <div class="changelog-section">
-          <h3>🎹 Modo Cromático con Secuenciador Propio</h3>
+          <h3>ðŸŽ¨ Barra de Estado con Veladura TranslÃºcida</h3>
           <ul>
-            <li><strong>Instrumento Melódico de 16 Notas:</strong> Mantén un pad presionado + pulsa <code>SHIFT</code> (<code>CROMATICO?</code>) y confirma con un segundo toque de <code>SHIFT</code> para clonar el sample a lo largo de los 16 pads afinados por semitonos.</li>
-            <li><strong>Secuenciador 100% Independiente:</strong> Cuenta con su propia memoria de pasos, permitiendo secuenciar melodías y líneas de bajo cromáticas sin alterar la secuencia de ritmos o samples de tus otros pads.</li>
-            <li><strong>Transposición de Octavas en Vivo:</strong> Girando <strong>Encoder 2</strong> se sube o baja de octava instantáneamente (<code>C-2</code> a <code>C7</code>), recalculando el pitch de todas las notas en tiempo real.</li>
-            <li><strong>Guardado en Banco:</strong> Se almacena y recupera automáticamente en el archivo <code>CHROMATIC.JAM</code> de cada proyecto.</li>
+            <li><strong>Fondo Scrim Esmerilado:</strong> La barra de estado ahora adopta la misma veladura translÃºcida al 28% que rodea los menÃºs emergentes y explorador de archivos, mejorando el contraste visual sin saturar la pantalla.</li>
+            <li><strong>TipografÃ­a de Alto Contraste:</strong> Indicadores limpios con divisoria sutil y diferenciaciÃ³n de color por motor y escena.</li>
           </ul>
         </div>
         <div class="changelog-section">
-          <h3>🎚️ Motor de 6 Calidades de Grabación</h3>
+          <h3>â±ï¸ Secuenciador: Nudge a 0 & Pitch Continuo en Sampler</h3>
           <ul>
-            <li><strong>Selector QUAL en Cabecera:</strong> Se amplió el selector de calidades en la barra de estado superior (<code>QUAL</code>) de 2 a 6 opciones según necesidad de tiempo y carácter:
-              <br>• <strong>HIFI</strong> (44.1 kHz / 16-bit) — Máx 5 segundos.
-              <br>• <strong>LOFI</strong> (22.05 kHz / 16-bit) — Máx 10 segundos.
-              <br>• <strong>12-EMU</strong> (22.05 kHz / 12-bit) — Máx 10 segundos (textura crujiente con máscara <code>0xFFF0</code>).
-              <br>• <strong>CRUNCH</strong> (22.05 kHz / 8-bit) — Máx 20 segundos (duplica el búfer a 441,000 muestras).
-              <br>• <strong>VINTAGE</strong> (11.025 kHz / 12-bit) — Máx 20 segundos (sonido cálido y retro).
-              <br>• <strong>EXTREMO</strong> (11.025 kHz / 8-bit) — Máx 40 segundos por pad.
-            </li>
-          </ul>
-        </div>
-        <div class="changelog-section">
-          <h3>🎙️ Nuevas Fuentes de Entrada y Ruteo Híbrido</h3>
-          <ul>
-            <li><strong>5 Modos de Entrada:</strong> Mantener presionado <code>SHIFT</code> + Clic Largo en <strong>Encoder 1</strong> (> 600 ms) cicla entre:
-              <br>• <code>MIC</code>: Micrófono interno.
-              <br>• <code>LINE</code>: Entrada de línea auxiliar Jack 3.5mm.
-              <br>• <code>RESAMPLING</code>: Remuestreo digital interno de la mezcla master.
-              <br>• <code>RESA + MIC</code>: Mezcla híbrida en vivo (Master interno + Micrófono).
-              <br>• <code>RESA + LINE</code>: Mezcla híbrida en vivo (Master interno + Entrada de línea externa).
-            </li>
-            <li><strong>Monitor de Audio:</strong> <code>SHIFT</code> + Clic Corto en <strong>Encoder 1</strong> activa o desactiva la monitorización directa (<code>MONITOR: ON / OFF</code>).</li>
-          </ul>
-        </div>
-        <div class="changelog-section">
-          <h3>📂 Mejoras del Sistema & MicroSD</h3>
-          <ul>
-            <li><strong>Soporte de Carpetas Largas:</strong> Búfer de nombres ampliado de 31 a <strong>63 caracteres</strong> y rutas completas a <strong>256 bytes</strong>, evitando carpetas "vacías" o bloqueos al leer álbumes y nombres extensos.</li>
-            <li><strong>Calibración Visual de Onda:</strong> Multiplicador ajustado a <code>x5</code> para representar fielmente la dinámica y silueta real de la onda en pantalla sin saturarse en bloque sólido.</li>
-            <li><strong>Multitasking Cooperativo:</strong> Pausas de procesamiento al escanear la MicroSD para mantener la pantalla y los controles 100% fluidos.</li>
-          </ul>
-        </div>
-        <div class="changelog-section">
-          <h3>✂️ Auto-Slicer & Chop Studio (Plataforma Web)</h3>
-          <ul>
-            <li><strong>Chop Studio Interactivo:</strong> Detección de transitorios y división en 16, 8 o 4 rebanadas con preescucha interactiva en matriz 4x4, atajos de teclado y botón STOP inmediato.</li>
-            <li><strong>Alineación de Calidades:</strong> Selectores con las 6 calidades exactas de la Placa Maestra y truncamiento seguro al límite de RAM respetando el inicio del corte.</li>
-            <li><strong>Control de Headroom:</strong> Selector de ganancia (75% recomendado) para evitar saturación de mezcla al tocar varios pads.</li>
-            <li><strong>Exportación Directa:</strong> Descarga proyectos listos para MicroSD (<code>/JAM_XX/</code>) o chops completos sin recorte para DAWs externos.</li>
+            <li><strong>Nudge ON-GRID:</strong> Los pasos ingresados manualmente en Step Record y ligaduras Step Ties (estilo OP-XY) se inicializan estrictamente en <code>stepNudge = 0</code>.</li>
+            <li><strong>Sensibilidad Estabilizada:</strong> Ajuste de micro-timing con <strong>Encoder 4</strong> refinado con muesca unitaria y sin saltos de valores.</li>
+            <li><strong>Pitch Continuo con Snap:</strong> Ajuste fino en sampler (Â±2400 cents) con atracciÃ³n magnÃ©tica a semitonos e indicaciÃ³n en pantalla.</li>
+            <li><strong>12-EMU por Defecto:</strong> Calidad de grabaciÃ³n de fÃ¡brica optimizada en 12-EMU con popups informativos de bits y kHz.</li>
           </ul>
         </div>
       </div>
@@ -620,8 +579,26 @@
       </div>
       <div class="modal-body">
         
-        <!-- Versión 1.2 -->
+        <!-- Versión 1.4 -->
         <details class="faq-item" open style="border-color: rgba(0, 229, 255, 0.35); background: rgba(0, 229, 255, 0.03);">
+          <summary style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+            <span><strong style="color: var(--cyan);">v1.4</strong> — Conmutación Sinte/Sampler sin Reset, Ruteo de Audio, Sincronización Escenas & Veladura UI</span>
+            <span style="font-size: 0.75rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">02/11/2026</span>
+          </summary>
+          <div class="changelog-section" style="margin-top: 14px;">
+            <ul>
+              <li><strong>Conmutación Directa de Motores:</strong> Cambio instantáneo entre Sinte y Sampler en cualquier pista sin requerir reseteo previo.</li>
+              <li><strong>Ruteo de Audio Robusto:</strong> Eliminación de zonas muertas de silencio al conmutar instrumentos; los pads suenan de inmediato sin requerir pulsar Shift.</li>
+              <li><strong>Sincronización Total de Escenas y Patrones:</strong> Organización confiable de patrones entre escenas y borrado total en <code>clearTrack</code>.</li>
+              <li><strong>Barra de Estado Scrim:</strong> Veladura translúcida esmerilada al 28% y alto contraste.</li>
+              <li><strong>Micro-timing / Nudge a 0:</strong> Pasos manuales y Step Ties en <code>stepNudge = 0</code> con sensibilidad de encoder estabilizada.</li>
+              <li><strong>Pitch Continuo & 12-EMU por Defecto:</strong> Afinación en sampler con snap a semitonos y calidad de grabación por defecto en 12-EMU.</li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Versión 1.2 -->
+        <details class="faq-item" style="margin-top: 8px;">
           <summary style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
             <span><strong style="color: var(--cyan);">v1.2</strong> — Mini-Reproductor & Chop, Grabadora Sesión SD, Modo Cromático & 6 Calidades</span>
             <span style="font-size: 0.75rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">02/09/2026</span>
